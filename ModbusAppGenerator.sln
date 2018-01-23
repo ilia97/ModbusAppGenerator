@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2024
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModbusAppGenerator.DataAccess", "ModbusAppGenerator.DataAccess\ModbusAppGenerator.DataAccess.csproj", "{1645ED67-5688-4641-97E6-023EEBB4A937}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModbusAppGenerator", "ModbusAppGenerator\ModbusAppGenerator.csproj", "{E36D0666-307C-4114-B050-1139FAEDD66F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModbusAppGenerator.Core", "ModbusAppGenerator.Core\ModbusAppGenerator.Core.csproj", "{12F95E37-49DB-47BE-ACC4-8788F9600625}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1645ED67-5688-4641-97E6-023EEBB4A937}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1645ED67-5688-4641-97E6-023EEBB4A937}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1645ED67-5688-4641-97E6-023EEBB4A937}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1645ED67-5688-4641-97E6-023EEBB4A937}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E36D0666-307C-4114-B050-1139FAEDD66F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E36D0666-307C-4114-B050-1139FAEDD66F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E36D0666-307C-4114-B050-1139FAEDD66F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E36D0666-307C-4114-B050-1139FAEDD66F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12F95E37-49DB-47BE-ACC4-8788F9600625}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12F95E37-49DB-47BE-ACC4-8788F9600625}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12F95E37-49DB-47BE-ACC4-8788F9600625}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12F95E37-49DB-47BE-ACC4-8788F9600625}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FADD62CD-4B59-4198-9E9C-9E0E9A99E43F}
+	EndGlobalSection
+EndGlobal
