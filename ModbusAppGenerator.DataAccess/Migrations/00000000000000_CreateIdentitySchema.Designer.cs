@@ -10,7 +10,7 @@ using ModbusAppGenerator.DataAccess;
 
 namespace WebApplication1.DataAccess.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(ModbusAppGenerator.DataAccess.ModbusAppGeneratorContext))]
     [Migration("00000000000000_CreateIdentitySchema")]
     partial class CreateIdentitySchema
     {

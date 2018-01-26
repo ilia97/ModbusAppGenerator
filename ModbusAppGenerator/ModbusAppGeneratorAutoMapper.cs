@@ -12,6 +12,9 @@ namespace ModbusAppGenerator
             CreateMap<User, UserEntity>();
             CreateMap<UserEntity, User>();
 
+            CreateMap<Project, ProjectEntity>();
+            CreateMap<ProjectEntity, Project>();
+
             CreateMap<IndexViewModel, UserEntity>();
             CreateMap<UserEntity, IndexViewModel>();
         }

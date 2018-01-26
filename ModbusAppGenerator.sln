@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModbusAppGenerator.DataAcce
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModbusAppGenerator", "ModbusAppGenerator\ModbusAppGenerator.csproj", "{E36D0666-307C-4114-B050-1139FAEDD66F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModbusAppGenerator.Core", "ModbusAppGenerator.Core\ModbusAppGenerator.Core.csproj", "{12F95E37-49DB-47BE-ACC4-8788F9600625}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModbusAppGenerator.Core", "ModbusAppGenerator.Core\ModbusAppGenerator.Core.csproj", "{12F95E37-49DB-47BE-ACC4-8788F9600625}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

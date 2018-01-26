@@ -13,7 +13,8 @@ using ModbusAppGenerator.Core.Services.Interfaces;
 using ModbusAppGenerator.Core.Services;
 using ModbusAppGenerator.DataAccess;
 using ModbusAppGenerator.DataAccess.Entities;
-using ModbusAppGenerator.Core.Models;
+using ModbusAppGenerator.DataAccess.UnitOfWork;
+using ModbusAppGenerator.DataAccess.Repository;
 
 namespace ModbusAppGenerator
 {
@@ -29,15 +30,22 @@ namespace ModbusAppGenerator
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<ModbusAppGeneratorContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<UserEntity, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddEntityFrameworkStores<ModbusAppGeneratorContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddSingleton<IUnitOfWork, UnitOfWork>();
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<IProjectService, ProjectService>();
+
+            services.AddTransient<IRepository<UserEntity>, Repository<UserEntity>>();
+            services.AddTransient<IRepository<ProjectEntity>, Repository<ProjectEntity>>();
+            services.AddTransient<IRepository<DeviceEntity>, Repository<DeviceEntity>>();
 
             services.AddMvc();
 

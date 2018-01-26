@@ -8,9 +8,11 @@ using ModbusAppGenerator.DataAccess.Entities;
 
 namespace ModbusAppGenerator.DataAccess
 {
-    public class ApplicationDbContext : IdentityDbContext<UserEntity>
+    public class ModbusAppGeneratorContext : IdentityDbContext<UserEntity>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public DbSet<ProjectEntity> Projects { get; set; }
+
+        public ModbusAppGeneratorContext(DbContextOptions<ModbusAppGeneratorContext> options)
             : base(options)
         {
         }
