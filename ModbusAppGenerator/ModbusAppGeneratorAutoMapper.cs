@@ -15,6 +15,15 @@ namespace ModbusAppGenerator
             CreateMap<Project, ProjectEntity>();
             CreateMap<ProjectEntity, Project>();
 
+            CreateMap<SlaveAction, SlaveActionEntity>();
+            CreateMap<SlaveActionEntity, SlaveAction>();
+
+            CreateMap<IpConnectionSettings, IpConnectionSettingsEntity>();
+            CreateMap<IpConnectionSettingsEntity, IpConnectionSettings>();
+
+            CreateMap<ComConnectionSettings, ComConnectionSettingsEntity>();
+            CreateMap<ComConnectionSettingsEntity, ComConnectionSettings>();
+
             CreateMap<IndexViewModel, UserEntity>();
             CreateMap<UserEntity, IndexViewModel>();
         }

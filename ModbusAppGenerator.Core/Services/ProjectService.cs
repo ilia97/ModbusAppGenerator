@@ -8,6 +8,7 @@ using ModbusAppGenerator.Core.Models;
 using ModbusAppGenerator.Core.Services.Interfaces;
 using ModbusAppGenerator.DataAccess;
 using ModbusAppGenerator.DataAccess.Entities;
+using ModbusAppGenerator.DataAccess.Enums;
 using ModbusAppGenerator.DataAccess.UnitOfWork;
 
 namespace ModbusAppGenerator.Core.Services
@@ -22,16 +23,37 @@ namespace ModbusAppGenerator.Core.Services
             _unitOfWork = unitOfWork;
         }
 
-        public int Add(Project project)
+        public int Add(Project project, string userId)
         {
             var projectEntity = _mapper.Map<Project, ProjectEntity>(project);
 
             foreach(var device in project.Devices)
             {
-                var deviceEntity = _mapper.Map<Device, DeviceEntity>(device);
+                var deviceEntity = _mapper.Map<SlaveAction, SlaveActionEntity>(device);
 
-                _unitOfWork.DeviceRepository.Insert(deviceEntity);
+                _unitOfWork.SlaveActionRepository.Insert(deviceEntity);
             }
+
+            if (project.ConnectionSettings.GetType() == typeof(IpConnectionSettings))
+            {
+                var ipConnectionSettings = _mapper.Map<IpConnectionSettings, IpConnectionSettingsEntity>((IpConnectionSettings)project.ConnectionSettings);
+
+                _unitOfWork.IpConnectionSettingsRepository.Insert(ipConnectionSettings);
+
+                projectEntity.SettingId = ipConnectionSettings.Id;
+                projectEntity.ConnectionType = ConnectionTypes.Ip;
+            }
+            else if (project.ConnectionSettings.GetType() == typeof(ComConnectionSettings))
+            {
+                var comConnectionSettings = _mapper.Map<ComConnectionSettings, ComConnectionSettingsEntity>((ComConnectionSettings)project.ConnectionSettings);
+
+                _unitOfWork.ComConnectionSettingsRepository.Insert(comConnectionSettings);
+
+                projectEntity.SettingId = comConnectionSettings.Id;
+                projectEntity.ConnectionType = ConnectionTypes.Com;
+            }
+
+            projectEntity.UserId = userId;
 
             _unitOfWork.ProjectRepository.Insert(projectEntity);
             _unitOfWork.Save();
@@ -88,7 +110,25 @@ namespace ModbusAppGenerator.Core.Services
                 throw new AccessDeniedException();
             }
 
-            return _mapper.Map<ProjectEntity, Project>(projectEntity);
+            var project = _mapper.Map<ProjectEntity, Project>(projectEntity);
+
+            switch(projectEntity.ConnectionType)
+            {
+                case DataAccess.Enums.ConnectionTypes.Ip:
+                    var ipConnectionSettings = _unitOfWork.IpConnectionSettingsRepository.GetById(projectEntity.SettingId);
+
+                    project.ConnectionSettings = _mapper.Map<IpConnectionSettingsEntity, IpConnectionSettings>(ipConnectionSettings);
+
+                    break;
+                case DataAccess.Enums.ConnectionTypes.Com:
+                    var comConnectionSettings = _unitOfWork.ComConnectionSettingsRepository.GetById(projectEntity.SettingId);
+
+                    project.ConnectionSettings = _mapper.Map<ComConnectionSettingsEntity, ComConnectionSettings>(comConnectionSettings);
+
+                    break;
+            }
+
+            return project;
         }
 
         public IList<Project> GetUserProjects(string userId)

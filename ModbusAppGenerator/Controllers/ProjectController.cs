@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ModbusAppGenerator.Core.Models;
 using ModbusAppGenerator.Core.Services;
+using ModbusAppGenerator.Core.Services.Interfaces;
 using ModbusAppGenerator.ViewModels.ProjectViewModels;
 
 namespace ModbusAppGenerator.Controllers
@@ -15,10 +16,10 @@ namespace ModbusAppGenerator.Controllers
     [Authorize]
     public class ProjectController : BaseController
     {
-        private readonly ProjectService _projectService;
+        private readonly IProjectService _projectService;
         private readonly IMapper _mapper;
 
-        public ProjectController(ProjectService projectService)
+        public ProjectController(IProjectService projectService)
         {
             _projectService = projectService;
         }
@@ -36,54 +37,50 @@ namespace ModbusAppGenerator.Controllers
         {
             return View();
         }
-
-        // GET: Project/Create
+        
         public ActionResult Create()
         {
             return View();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult CreateIpProject(CreateIpProjectViewModel model)
+        {
+            var project = _mapper.Map<CreateIpProjectViewModel, Project>(model);
+
+            if (!ModelState.IsValid)
+            {
+                return View("Create", model);
+            }
+
+            return RedirectToAction("Create", project);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateComProject(CreateComProjectViewModel model)
+        {
+            var project = _mapper.Map<CreateComProjectViewModel, Project>(model);
+
+            if (!ModelState.IsValid)
+            {
+                return View("Create", model);
+            }
+
+            return RedirectToAction("Create", project);
+        }
+
+        public ActionResult Create(Project model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            var project = _mapper.Map<CreateIpProjectViewModel, Project>(model);
-
-            project.UserId = GetCurrentUserId();
-
-            var newProjectId = _projectService.Add(project);
+            var newProjectId = _projectService.Add(model, GetCurrentUserId());
 
             return RedirectToAction("Details", new { id = newProjectId });
-        }
-
-        public ActionResult CreateComProject(CreateComProjectViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-
-            }
-
-            return View();
-        }
-
-        // POST: Project/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
 
         // GET: Project/Edit/5

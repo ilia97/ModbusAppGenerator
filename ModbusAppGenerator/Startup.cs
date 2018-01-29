@@ -37,7 +37,7 @@ namespace ModbusAppGenerator
                 .AddEntityFrameworkStores<ModbusAppGeneratorContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddSingleton<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
@@ -45,7 +45,9 @@ namespace ModbusAppGenerator
 
             services.AddTransient<IRepository<UserEntity>, Repository<UserEntity>>();
             services.AddTransient<IRepository<ProjectEntity>, Repository<ProjectEntity>>();
-            services.AddTransient<IRepository<DeviceEntity>, Repository<DeviceEntity>>();
+            services.AddTransient<IRepository<SlaveActionEntity>, Repository<SlaveActionEntity>>();
+            services.AddTransient<IRepository<IpConnectionSettingsEntity>, Repository<IpConnectionSettingsEntity>>();
+            services.AddTransient<IRepository<ComConnectionSettingsEntity>, Repository<ComConnectionSettingsEntity>>();
 
             services.AddMvc();
 

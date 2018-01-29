@@ -12,6 +12,14 @@ namespace ModbusAppGenerator.DataAccess
     {
         public DbSet<ProjectEntity> Projects { get; set; }
 
+        public DbSet<SlaveActionEntity> SlaveActions { get; set; }
+
+        public DbSet<IpConnectionSettingsEntity> IpConnectionSettings { get; set; }
+
+        public DbSet<ComConnectionSettingsEntity> ComConnectionSettings { get; set; }
+
+        public DbSet<DataTypeEntity> DataTypes { get; set; }
+
         public ModbusAppGeneratorContext(DbContextOptions<ModbusAppGeneratorContext> options)
             : base(options)
         {

@@ -9,15 +9,17 @@ namespace ModbusAppGenerator.DataAccess.UnitOfWork
     public class UnitOfWork : IUnitOfWork
     {
         private ModbusAppGeneratorContext context;
-        private IRepository<UserEntity> userRepository;
-        private IRepository<ProjectEntity> projectRepository;
-        private IRepository<DeviceEntity> deviceRepository;
+        private IRepository<UserEntity> _userRepository;
+        private IRepository<ProjectEntity> _projectRepository;
+        private IRepository<SlaveActionEntity> _slaveActionRepository;
+        private IRepository<IpConnectionSettingsEntity> _ipConnectionSettingsRepository;
+        private IRepository<ComConnectionSettingsEntity> _comConnectionSettingsRepository;
 
         public IRepository<UserEntity> UserRepository
         {
             get
             {
-                return this.userRepository;
+                return this._userRepository;
             }
         }
 
@@ -25,28 +27,48 @@ namespace ModbusAppGenerator.DataAccess.UnitOfWork
         {
             get
             {
-                return this.projectRepository;
+                return this._projectRepository;
             }
         }
 
-        public IRepository<DeviceEntity> DeviceRepository
+        public IRepository<SlaveActionEntity> SlaveActionRepository
         {
             get
             {
-                return this.deviceRepository;
+                return this._slaveActionRepository;
+            }
+        }
+
+        public IRepository<IpConnectionSettingsEntity> IpConnectionSettingsRepository
+        {
+            get
+            {
+                return this._ipConnectionSettingsRepository;
+            }
+        }
+
+        public IRepository<ComConnectionSettingsEntity> ComConnectionSettingsRepository
+        {
+            get
+            {
+                return this._comConnectionSettingsRepository;
             }
         }
 
         public UnitOfWork(ModbusAppGeneratorContext context,
             IRepository<UserEntity> userRepository,
             IRepository<ProjectEntity> projectRepository,
-            IRepository<DeviceEntity> deviceRepository)
+            IRepository<SlaveActionEntity> slaveActionRepository,
+            IRepository<IpConnectionSettingsEntity> ipConnectionSettingsRepository,
+            IRepository<ComConnectionSettingsEntity> comConnectionSettingsRepository)
         {
             this.context = context;
 
-            this.userRepository = userRepository;
-            this.projectRepository = projectRepository;
-            this.deviceRepository = deviceRepository;
+            this._userRepository = userRepository;
+            this._projectRepository = projectRepository;
+            this._slaveActionRepository = slaveActionRepository;
+            this._ipConnectionSettingsRepository = ipConnectionSettingsRepository;
+            this._comConnectionSettingsRepository = comConnectionSettingsRepository;
         }
 
         public void Save()

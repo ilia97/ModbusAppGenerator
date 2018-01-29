@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using ModbusAppGenerator.Core.Enums;
-
-namespace ModbusAppGenerator.ViewModels.ProjectViewModels
+﻿namespace ModbusAppGenerator.ViewModels.ProjectViewModels
 {
     public class CreateProjectViewModel
     {

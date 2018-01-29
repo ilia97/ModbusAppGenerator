@@ -6,7 +6,7 @@ namespace ModbusAppGenerator.Core.Services.Interfaces
 {
     public interface IProjectService
     {
-        int Add(Project project);
+        int Add(Project project, string userId);
 
         void Edit(Project project, string userId);
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ModbusAppGenerator.Core.Enums
+namespace ModbusAppGenerator.DataAccess.Enums
 {
     public enum ConnectionTypes
     {

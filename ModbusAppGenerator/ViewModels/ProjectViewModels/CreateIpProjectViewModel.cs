@@ -7,5 +7,8 @@ namespace ModbusAppGenerator.ViewModels.ProjectViewModels
 {
     public class CreateIpProjectViewModel : CreateProjectViewModel
     {
+        public string Host { set; get; }
+
+        public int Port { set; get; }
     }
 }

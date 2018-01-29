@@ -12,7 +12,11 @@ namespace ModbusAppGenerator.DataAccess.UnitOfWork
 
         IRepository<ProjectEntity> ProjectRepository { get; }
 
-        IRepository<DeviceEntity> DeviceRepository { get; }
+        IRepository<SlaveActionEntity> SlaveActionRepository { get; }
+
+        IRepository<IpConnectionSettingsEntity> IpConnectionSettingsRepository { get; }
+
+        IRepository<ComConnectionSettingsEntity> ComConnectionSettingsRepository { get; }
 
         void Save();
     }
