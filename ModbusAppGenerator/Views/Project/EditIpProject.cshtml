@@ -1,0 +1,57 @@
+﻿@model ModbusAppGenerator.ViewModels.ProjectViewModels.EditIpProjectViewModel
+
+@{
+    ViewData["Title"] = "Edit Ip Project";
+}
+
+<h2>Edit Ip Project Settings</h2>
+
+<div>
+    <form asp-action="EditIpProject">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input asp-for="Id" class="form-control" type="hidden" />
+        <div class="form-group">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input asp-for="Name" class="mdl-textfield__input" type="text">
+                <label asp-for="Name" class="mdl-textfield__label"></label>
+            </div>
+            <div>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input asp-for="Host" class="mdl-textfield__input" />
+                <label asp-for="Host" class="mdl-textfield__label"></label>
+            </div>
+            <div>
+                <span asp-validation-for="Host" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input asp-for="Port" class="mdl-textfield__input" />
+                <label asp-for="Port" class="mdl-textfield__label"></label>
+            </div>
+            <div>
+                <span asp-validation-for="Port" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <textarea asp-for="Description" class="mdl-textfield__input" type="text" rows="3"></textarea>
+                <label asp-for="Description" class="mdl-textfield__label"></label>
+            </div>
+            <div>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Save" class="mdl-button mdl-js-button mdl-button--raised primary-button" />
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -19,25 +19,32 @@ namespace ModbusAppGenerator.Controllers
         private readonly IProjectService _projectService;
         private readonly IMapper _mapper;
 
-        public ProjectController(IProjectService projectService)
+        public ProjectController(IMapper mapper, IProjectService projectService)
         {
+            _mapper = mapper;
             _projectService = projectService;
         }
-        
+
         public ActionResult Index()
         {
             var currentUserId = GetCurrentUserId();
 
             var usersProjects = _projectService.GetUserProjects(currentUserId);
 
-            return View(usersProjects);
+            var model = _mapper.Map<IList<Project>, IList<ProjectListItemViewModel>>(usersProjects);
+
+            return View(model);
         }
-        
+
         public ActionResult Details(int id)
         {
-            return View();
+            var project = _projectService.Get(id, GetCurrentUserId());
+
+            var model = _mapper.Map<Project, DetailsViewModel>(project);
+
+            return View(model);
         }
-        
+
         public ActionResult Create()
         {
             return View();
@@ -45,88 +52,216 @@ namespace ModbusAppGenerator.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateIpProject(CreateIpProjectViewModel model)
-        {
-            var project = _mapper.Map<CreateIpProjectViewModel, Project>(model);
-
-            if (!ModelState.IsValid)
-            {
-                return View("Create", model);
-            }
-
-            return RedirectToAction("Create", project);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult CreateComProject(CreateComProjectViewModel model)
-        {
-            var project = _mapper.Map<CreateComProjectViewModel, Project>(model);
-
-            if (!ModelState.IsValid)
-            {
-                return View("Create", model);
-            }
-
-            return RedirectToAction("Create", project);
-        }
-
-        public ActionResult Create(Project model)
+        public ActionResult Create(CreateProjectViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            var newProjectId = _projectService.Add(model, GetCurrentUserId());
+            var project = _mapper.Map<CreateProjectViewModel, Project>(model);
 
-            return RedirectToAction("Details", new { id = newProjectId });
+            var newProjectId = _projectService.Add(project, GetCurrentUserId());
+
+            switch (model.ConnectionType)
+            {
+                case DataAccess.Enums.ConnectionTypes.Ip:
+                    return RedirectToAction("CreateIpProject", new { projectId = newProjectId });
+                case DataAccess.Enums.ConnectionTypes.Com:
+                    return RedirectToAction("CreateComProject", new { projectId = newProjectId });
+            }
+
+            return View(model);
         }
 
-        // GET: Project/Edit/5
+        public ActionResult CreateIpProject(int projectId)
+        {
+            var project = _projectService.Get(projectId, GetCurrentUserId());
+
+            var ipProject = _mapper.Map<Project, CreateIpProjectViewModel>(project);
+
+            return View(ipProject);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateIpProject(CreateIpProjectViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var project = _projectService.Get(model.Id, GetCurrentUserId());
+
+            project.ConnectionSettings = new IpConnectionSettings()
+            {
+                Host = model.Host,
+                Port = model.Port
+            };
+
+            _projectService.Edit(project, GetCurrentUserId());
+
+            return RedirectToAction("Index");
+        }
+        
+        public ActionResult CreateComProject(int projectId)
+        {
+            var project = _projectService.Get(projectId, GetCurrentUserId());
+
+            var comProject = _mapper.Map<Project, CreateComProjectViewModel>(project);
+
+            return View(comProject);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateComProject(CreateComProjectViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var project = _projectService.Get(model.Id, GetCurrentUserId());
+
+            project.ConnectionSettings = new ComConnectionSettings()
+            {
+                BaudRate = model.BaudRate.Value,
+                DataBits = model.DataBits.Value,
+                Parity = model.Parity.Value,
+                PortName = model.PortName,
+                StopBits = model.StopBits.Value
+            };
+
+            _projectService.Edit(project, GetCurrentUserId());
+
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult UpdateActions(int id)
+        {
+            var project = _projectService.Get(id, GetCurrentUserId());
+
+            var model = _mapper.Map<Project, AddProjectActionsViewModel>(project);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult UpdateActions(AddProjectActionsViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var actions = _mapper.Map<List<ActionViewModel>, List<SlaveAction>>(model.Actions);
+
+            _projectService.UpdateActions(model.Id, actions, GetCurrentUserId());
+
+            return RedirectToAction("UpdateActions", new { id = model.Id });
+        }
+        
         public ActionResult Edit(int id)
         {
-            return View();
+            var project = _projectService.Get(id, GetCurrentUserId());
+            
+            if (project.ConnectionSettings.GetType() == typeof(IpConnectionSettings))
+            {
+                return RedirectToAction("EditIpProject", new { id });
+            }
+            else if (project.ConnectionSettings.GetType() == typeof(ComConnectionSettings))
+            {
+                return RedirectToAction("EditComProject", new { id });
+            }
+
+            return null;
         }
 
-        // POST: Project/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult EditIpProject(int id)
         {
-            try
-            {
-                // TODO: Add update logic here
+            var project = _projectService.Get(id, GetCurrentUserId());
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var model = _mapper.Map<Project, EditIpProjectViewModel>(project);
+
+            return View(model);
         }
 
-        // GET: Project/Delete/5
+        [HttpPost]
+        public ActionResult EditIpProject(EditIpProjectViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var connectionSettings = (IpConnectionSettings)_projectService.Get(model.Id, GetCurrentUserId()).ConnectionSettings;
+            connectionSettings.Host = model.Host;
+            connectionSettings.Port = model.Port;
+
+            var project = _mapper.Map<EditIpProjectViewModel, Project>(model);
+
+            project.ConnectionSettings = connectionSettings;
+
+             _projectService.Edit(project, GetCurrentUserId());
+
+            return RedirectToAction("UpdateActions", new { id = project.Id });
+        }
+
+        public ActionResult EditComProject(int id)
+        {
+            var project = _projectService.Get(id, GetCurrentUserId());
+
+            var model = _mapper.Map<Project, EditComProjectViewModel>(project);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult EditComProject(EditComProjectViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var connectionSettings = (ComConnectionSettings)_projectService.Get(model.Id, GetCurrentUserId()).ConnectionSettings;
+            connectionSettings.BaudRate = model.BaudRate.Value;
+            connectionSettings.DataBits = model.DataBits.Value;
+            connectionSettings.Parity = model.Parity.Value;
+            connectionSettings.PortName = model.PortName;
+            connectionSettings.StopBits = model.StopBits.Value;
+
+            var project = _mapper.Map<EditComProjectViewModel, Project>(model);
+
+            project.ConnectionSettings = connectionSettings;
+
+            _projectService.Edit(project, GetCurrentUserId());
+
+            return RedirectToAction("UpdateActions", new { id = project.Id });
+        }
+
         public ActionResult Delete(int id)
         {
-            return View();
+            _projectService.Delete(id, GetCurrentUserId());
+
+            return RedirectToAction("Index");
         }
 
-        // POST: Project/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Download(int id)
         {
-            try
-            {
-                // TODO: Add delete logic here
+            var zipFile = _projectService.DownloadProject(id, GetCurrentUserId());
+            var project = _projectService.Get(id, GetCurrentUserId());
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
+            string contentType = "application/zip";
+            HttpContext.Response.ContentType = contentType;
+            var result = new FileContentResult(zipFile, contentType)
             {
-                return View();
-            }
+                FileDownloadName = $"{project.Name}.zip"
+            };
+
+            return result;
         }
     }
 }

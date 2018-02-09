@@ -1,14 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ModbusAppGenerator.ViewModels.ProjectViewModels
 {
-    public class CreateIpProjectViewModel : CreateProjectViewModel
+    public class CreateIpProjectViewModel
     {
+        public int Id { set; get; }
+
+        [Required]
+        [RegularExpression(@"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b", ErrorMessage = "Wrong host format.")]
         public string Host { set; get; }
 
+        [Required]
         public int Port { set; get; }
     }
 }

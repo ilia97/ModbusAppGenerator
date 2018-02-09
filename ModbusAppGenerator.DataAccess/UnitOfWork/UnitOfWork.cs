@@ -14,6 +14,7 @@ namespace ModbusAppGenerator.DataAccess.UnitOfWork
         private IRepository<SlaveActionEntity> _slaveActionRepository;
         private IRepository<IpConnectionSettingsEntity> _ipConnectionSettingsRepository;
         private IRepository<ComConnectionSettingsEntity> _comConnectionSettingsRepository;
+        private IRepository<DataTypeEntity> _dataTypesRepository;
 
         public IRepository<UserEntity> UserRepository
         {
@@ -55,12 +56,21 @@ namespace ModbusAppGenerator.DataAccess.UnitOfWork
             }
         }
 
+        public IRepository<DataTypeEntity> DataTypesRepository
+        {
+            get
+            {
+                return this._dataTypesRepository;
+            }
+        }
+
         public UnitOfWork(ModbusAppGeneratorContext context,
             IRepository<UserEntity> userRepository,
             IRepository<ProjectEntity> projectRepository,
             IRepository<SlaveActionEntity> slaveActionRepository,
             IRepository<IpConnectionSettingsEntity> ipConnectionSettingsRepository,
-            IRepository<ComConnectionSettingsEntity> comConnectionSettingsRepository)
+            IRepository<ComConnectionSettingsEntity> comConnectionSettingsRepository,
+            IRepository<DataTypeEntity> dataTypesRepository)
         {
             this.context = context;
 
@@ -69,6 +79,7 @@ namespace ModbusAppGenerator.DataAccess.UnitOfWork
             this._slaveActionRepository = slaveActionRepository;
             this._ipConnectionSettingsRepository = ipConnectionSettingsRepository;
             this._comConnectionSettingsRepository = comConnectionSettingsRepository;
+            this._dataTypesRepository = dataTypesRepository;
         }
 
         public void Save()

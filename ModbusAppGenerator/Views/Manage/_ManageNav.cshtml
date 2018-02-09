@@ -1,4 +1,5 @@
 ﻿@using ModbusAppGenerator.Views.Manage
+@using ModbusAppGenerator.DataAccess.Entities
 @inject SignInManager<UserEntity> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();

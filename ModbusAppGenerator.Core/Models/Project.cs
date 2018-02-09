@@ -4,6 +4,11 @@ namespace ModbusAppGenerator.Core.Models
 {
     public class Project
     {
+        public Project()
+        {
+            Actions = new List<SlaveAction>();
+        }
+
         public int Id { set; get; }
 
         public string Name { set; get; }
@@ -18,7 +23,7 @@ namespace ModbusAppGenerator.Core.Models
 
         public int Period { set; get; }
 
-        public virtual List<SlaveAction> Devices { set; get; }
+        public virtual List<SlaveAction> Actions { set; get; }
 
         public ConnectionSettings ConnectionSettings { set; get; }
 

@@ -38,12 +38,14 @@ namespace ModbusAppGenerator.Controllers
           SignInManager<UserEntity> signInManager,
           IEmailSender emailSender,
           ILogger<ManageController> logger,
+          IMapper mapper,
           UrlEncoder urlEncoder)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
+            _mapper = mapper;
             _urlEncoder = urlEncoder;
         }
 

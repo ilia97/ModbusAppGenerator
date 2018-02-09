@@ -16,6 +16,8 @@ namespace ModbusAppGenerator.Core.Services.Interfaces
 
         IList<Project> GetUserProjects(string userId);
 
-        Stream DownloadProject(int projectId, string userId);
+        void UpdateActions(int projectId, List<SlaveAction> actions, string userId);
+
+        byte[] DownloadProject(int projectId, string userId);
     }
 }

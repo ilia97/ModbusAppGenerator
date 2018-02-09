@@ -25,4 +25,9 @@
     <ProjectReference Include="..\ModbusAppGenerator.DataAccess\ModbusAppGenerator.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Temp\AppFiles\" />
+    <Folder Include="wwwroot\lib\mdl\" />
+  </ItemGroup>
+
 </Project>

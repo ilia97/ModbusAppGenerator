@@ -18,6 +18,8 @@ namespace ModbusAppGenerator.DataAccess.UnitOfWork
 
         IRepository<ComConnectionSettingsEntity> ComConnectionSettingsRepository { get; }
 
+        IRepository<DataTypeEntity> DataTypesRepository { get; }
+
         void Save();
     }
 }

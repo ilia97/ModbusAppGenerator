@@ -8,7 +8,6 @@ namespace ModbusAppGenerator.DataAccess.Entities
 {
     public class ComConnectionSettingsEntity
     {
-        [Key]
         public int Id { set; get; }
 
         public string PortName { set; get; }

@@ -4,44 +4,62 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+<div class="mdl-grid">
+    <div class="mdl-cell mdl-cell--11-col">
+        <h2>Your Projects:</h2>
+    </div>
+    <div class="mdl-cell mdl-cell--1-col">
+        <p>
+            <a asp-action="Create" class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored add-project-button">
+                <i class="material-icons">add</i>
+            </a>
+        </p>
+    </div>
+</div>
+<div class="mdl-grid">
+    @foreach (var item in Model)
+    {
+        <div class="mdl-cell mdl-cell--4-col">
+            <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                <div class="mdl-card__title">
+                    <h2 class="mdl-card__title-text">@item.Name</h2>
+                </div>
+                <div class="mdl-card__supporting-text">
+                    @item.Description
+                </div>
+                <div class="mdl-card__actions mdl-card--border">
+                    <a href='@Url.Action("Details", new { id = item.Id })' class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                        Get Started
+                    </a>
+                </div>
+                <div class="mdl-card__menu">
+                    <a href='@Url.Action("Edit", new { id = item.Id })' class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                        <i class="material-icons">mode_edit</i>
+                    </a>
+                    <a class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect project-delete" data-title="@item.Name" data-id="@item.Id">
+                        <i class="material-icons">delete</i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Id)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Description)
-                </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
+<dialog class="mdl-dialog medium-width">
+    <input id="dialog-delete-project-id" type="hidden" />
+    <h4 class="mdl-dialog__title">Confirm</h4>
+    <div class="mdl-dialog__content">
+        <p id="dialog-body">
+
+        </p>
+    </div>
+    <div class="mdl-dialog__actions">
+        <button type="button" class="mdl-button confirm">Agree</button>
+        <button type="button" class="mdl-button close">Disagree</button>
+    </div>
+</dialog>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/viewControllers/project/list.js"></script>
 }
-    </tbody>
-</table>

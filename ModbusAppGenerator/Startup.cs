@@ -33,7 +33,15 @@ namespace ModbusAppGenerator
             services.AddDbContext<ModbusAppGeneratorContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<UserEntity, IdentityRole>()
+            services.AddIdentity<UserEntity, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 1;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequiredUniqueChars = 0;
+            })
                 .AddEntityFrameworkStores<ModbusAppGeneratorContext>()
                 .AddDefaultTokenProviders();
 
@@ -48,6 +56,7 @@ namespace ModbusAppGenerator
             services.AddTransient<IRepository<SlaveActionEntity>, Repository<SlaveActionEntity>>();
             services.AddTransient<IRepository<IpConnectionSettingsEntity>, Repository<IpConnectionSettingsEntity>>();
             services.AddTransient<IRepository<ComConnectionSettingsEntity>, Repository<ComConnectionSettingsEntity>>();
+            services.AddTransient<IRepository<DataTypeEntity>, Repository<DataTypeEntity>>();
 
             services.AddMvc();
 

@@ -1,0 +1,42 @@
+﻿@model ModbusAppGenerator.ViewModels.ProjectViewModels.CreateIpProjectViewModel
+
+@{
+    ViewData["Title"] = "Create Ip Project";
+}
+
+<h2 class="text-center">Create a New Project. Step 2</h2>
+
+<h5 class="text-center">Great! You have completed the main settings of your project! Please complete IP configurations of your project.</h5>
+<div>
+    <form asp-action="CreateIpProject">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <input asp-for="Id" class="form-control" type="hidden" />
+        </div>
+        <div class="form-group">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input asp-for="Host" class="mdl-textfield__input" />
+                <label asp-for="Host" class="mdl-textfield__label"></label>
+            </div>
+            <div>
+                <span asp-validation-for="Host" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input asp-for="Port" class="mdl-textfield__input" />
+                <label asp-for="Port" class="mdl-textfield__label"></label>
+            </div>
+            <div>
+                <span asp-validation-for="Port" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Save" class="mdl-button mdl-js-button mdl-button--raised primary-button" />
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

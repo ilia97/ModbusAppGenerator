@@ -1,0 +1,84 @@
+﻿@model ModbusAppGenerator.ViewModels.ProjectViewModels.CreateComProjectViewModel
+
+@{
+    ViewData["Title"] = "Create Com Project";
+}
+
+<h2 class="text-center">Create a New Project. Step 2</h2>
+
+<h5 class="text-center">Great! You have completed the main settings of your project! Please complete COM configurations of your project.</h5>
+<div>
+    <form asp-action="CreateComProject">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input asp-for="Id" class="form-control" type="hidden" />
+        <div class="form-group">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input asp-for="PortName" class="mdl-textfield__input">
+                <label asp-for="PortName" class="mdl-textfield__label"></label>
+            </div>
+            <div>
+                <span asp-validation-for="PortName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input asp-for="BaudRate" class="mdl-textfield__input">
+                <label asp-for="BaudRate" class="mdl-textfield__label"></label>
+            </div>
+            <div>
+                <span asp-validation-for="BaudRate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input asp-for="DataBits" class="mdl-textfield__input">
+                <label asp-for="DataBits" class="mdl-textfield__label"></label>
+            </div>
+            <div>
+                <span asp-validation-for="DataBits" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
+                <input type="text" asp-for="Parity" class="mdl-textfield__input" id="Parity" readonly>
+                <input type="hidden"asp-for="Parity" name="Parity">
+                <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                <label asp-for="Parity" class="mdl-textfield__label"></label>
+                <ul for="Parity" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+                    <li class="mdl-menu__item" data-val="0">None</li>
+                    <li class="mdl-menu__item" data-val="1">Odd</li>
+                    <li class="mdl-menu__item" data-val="2">Even</li>
+                    <li class="mdl-menu__item" data-val="3">Mark</li>
+                    <li class="mdl-menu__item" data-val="4">Space</li>
+                </ul>
+            </div>
+            <div>
+                <span asp-validation-for="Parity" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
+                <input type="text" asp-for="StopBits" class="mdl-textfield__input" id="StopBits" readonly>
+                <input type="hidden" asp-for="StopBits" name="StopBits">
+                <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                <label asp-for="StopBits" class="mdl-textfield__label"></label>
+                <ul for="StopBits" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+                    <li class="mdl-menu__item" data-val="0">0</li>
+                    <li class="mdl-menu__item" data-val="1">1</li>
+                    <li class="mdl-menu__item" data-val="3">1.5</li>
+                    <li class="mdl-menu__item" data-val="2">2</li>
+                </ul>
+            </div>
+            <div>
+                <span asp-validation-for="StopBits" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Save" class="mdl-button mdl-js-button mdl-button--raised primary-button" />
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

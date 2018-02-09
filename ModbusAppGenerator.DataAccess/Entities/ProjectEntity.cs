@@ -13,8 +13,7 @@ namespace ModbusAppGenerator.DataAccess.Entities
         {
             Actions = new List<SlaveActionEntity>();
         }
-
-        [Key]
+        
         public int Id { set; get; }
 
         public string Name { set; get; }
@@ -28,8 +27,7 @@ namespace ModbusAppGenerator.DataAccess.Entities
         public int Timeout { set; get; }
         
         public int Period { set; get; }
-
-        [ForeignKey("User")]
+        
         public string UserId { set; get; }
         public UserEntity User { set; get; }
 
