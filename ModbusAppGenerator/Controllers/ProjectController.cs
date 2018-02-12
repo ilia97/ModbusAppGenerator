@@ -42,6 +42,22 @@ namespace ModbusAppGenerator.Controllers
 
             var model = _mapper.Map<Project, DetailsViewModel>(project);
 
+            if (project.ConnectionSettings.GetType() == typeof (IpConnectionSettings))
+            {
+                model.ConnectionType = DataAccess.Enums.ConnectionTypes.Ip;
+                model.Host = ((IpConnectionSettings)project.ConnectionSettings).Host;
+                model.Port = ((IpConnectionSettings)project.ConnectionSettings).Port;
+            }
+            else if (project.ConnectionSettings.GetType() == typeof(ComConnectionSettings))
+            {
+                model.ConnectionType = DataAccess.Enums.ConnectionTypes.Com;
+                model.BaudRate = ((ComConnectionSettings)project.ConnectionSettings).BaudRate;
+                model.DataBits = ((ComConnectionSettings)project.ConnectionSettings).DataBits;
+                model.Parity = ((ComConnectionSettings)project.ConnectionSettings).Parity;
+                model.PortName = ((ComConnectionSettings)project.ConnectionSettings).PortName;
+                model.StopBits = ((ComConnectionSettings)project.ConnectionSettings).StopBits;
+            }
+
             return View(model);
         }
 
@@ -97,12 +113,12 @@ namespace ModbusAppGenerator.Controllers
             project.ConnectionSettings = new IpConnectionSettings()
             {
                 Host = model.Host,
-                Port = model.Port
+                Port = model.Port.Value
             };
 
             _projectService.Edit(project, GetCurrentUserId());
 
-            return RedirectToAction("Index");
+            return RedirectToAction("UpdateActions", new { id = project.Id });
         }
         
         public ActionResult CreateComProject(int projectId)
@@ -136,7 +152,7 @@ namespace ModbusAppGenerator.Controllers
 
             _projectService.Edit(project, GetCurrentUserId());
 
-            return RedirectToAction("Index");
+            return RedirectToAction("UpdateActions", new { id = project.Id});
         }
 
         public ActionResult UpdateActions(int id)
@@ -144,6 +160,11 @@ namespace ModbusAppGenerator.Controllers
             var project = _projectService.Get(id, GetCurrentUserId());
 
             var model = _mapper.Map<Project, AddProjectActionsViewModel>(project);
+
+            for (int  i = 0; i < model.Actions.Count; i++)
+            {
+                model.Actions[i].Number = i;
+            }
 
             return View(model);
         }
@@ -160,7 +181,7 @@ namespace ModbusAppGenerator.Controllers
 
             _projectService.UpdateActions(model.Id, actions, GetCurrentUserId());
 
-            return RedirectToAction("UpdateActions", new { id = model.Id });
+            return RedirectToAction("Details", new { id = model.Id });
         }
         
         public ActionResult Edit(int id)

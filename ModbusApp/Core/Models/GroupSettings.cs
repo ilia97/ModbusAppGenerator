@@ -15,6 +15,11 @@ namespace Core.Models
         public int Id { set; get; }
 
         /// <summary>
+        /// Номер устройства, с которым происходит взаимодествие
+        /// </summary>
+        public byte DeviceId { set; get; }
+
+        /// <summary>
         /// Номер первого регистра, с которого необходимо начинать считывание.
         /// </summary>
         public ushort StartAddress { set; get; }

@@ -24,7 +24,9 @@ namespace ModbusAppGenerator
                     SlaveActionEntityId = action.Id,
                     Type = type
                 }))) ;
-            CreateMap<SlaveActionEntity, SlaveAction>();
+            CreateMap<SlaveActionEntity, SlaveAction>()
+                .ForMember("Types", opt => opt.MapFrom(action =>
+                action.Types.Select(type => type.Type))); ;
 
             CreateMap<IpConnectionSettings, IpConnectionSettingsEntity>();
             CreateMap<IpConnectionSettingsEntity, IpConnectionSettings>();

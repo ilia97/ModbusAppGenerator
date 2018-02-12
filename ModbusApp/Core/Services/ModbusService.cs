@@ -104,16 +104,16 @@ namespace Core.Services
                 {
                     if (masterSettings.IsLoggerEnabled)
                     {
-                        Logger.WriteDebug($"Sent request to a slave: DeviceId = {masterSettings.DeviceId}; SlaveAddress={slave.StartAddress}; NumberOfRegisters={slave.NumberOfRegisters}.");
+                        Logger.WriteDebug($"Sent request to a slave: DeviceId = {slave.DeviceId}; SlaveAddress={slave.StartAddress}; NumberOfRegisters={slave.NumberOfRegisters}.");
                     }
 
-                    var registers = master.ReadHoldingRegisters(masterSettings.DeviceId, slave.StartAddress,
+                    var registers = master.ReadHoldingRegisters(slave.DeviceId, slave.StartAddress,
                         slave.NumberOfRegisters);
 
                     if (registers == null || registers.Length == 0)
                     {
                         throw new EmptyResultException(
-                            $"Slave with address {masterSettings.DeviceId} returned an empty result when reading {slave.NumberOfRegisters} registers starting with register number {slave.StartAddress}.");
+                            $"Slave with address {slave.DeviceId} returned an empty result when reading {slave.NumberOfRegisters} registers starting with register number {slave.StartAddress}.");
                     }
 
                     PackagesCounter.RecievedPackagesCount += 1;
@@ -280,7 +280,7 @@ namespace Core.Services
                     
                     if (masterSettings.IsLoggerEnabled)
                     {
-                        Logger.WriteDebug($"Recieved data from slave: DeviceId = {masterSettings.DeviceId}; SlaveAddress={slave.StartAddress}; NumberOfRegisters={slave.NumberOfRegisters}; {hexResults}");
+                        Logger.WriteDebug($"Recieved data from slave: DeviceId = {slave.DeviceId}; SlaveAddress={slave.StartAddress}; NumberOfRegisters={slave.NumberOfRegisters}; {hexResults}");
                     }
                 }
                 catch (SlaveException slaveException)

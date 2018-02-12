@@ -16,9 +16,9 @@ namespace ModbusAppGenerator.Core.Models
 
         public int SlaveAddress { set; get; }
 
-        public ushort StartAddress { set; get; }
+        public int StartAddress { set; get; }
 
-        public ushort NumberOfRegisters { set; get; }
+        public int NumberOfRegisters { set; get; }
 
         public List<ModbusDataType> Types { set; get; }
     }

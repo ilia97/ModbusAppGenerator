@@ -138,4 +138,11 @@ button a {
     margin-bottom: 10px;
     border: 1px solid black;
     padding: 10px;
+    border-radius: 20px;
+}
+
+.floated-label {
+    font-size: 12px !important;
+    top: 4px !important;
+    visibility: visible;
 }

@@ -1,11 +1,11 @@
 ﻿@model ModbusAppGenerator.ViewModels.ProjectViewModels.ActionViewModel
 
 <div>
-    <input type="hidden" value="@Model.Id" class="action-id" />
+    <input type="hidden" value="@Model.Id" class="action-id-input" />
     <div class="form-group">
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input asp-for="SlaveAddress" class="mdl-textfield__input">
-            <label asp-for="SlaveAddress" class="mdl-textfield__label"></label>
+            <input name="SlaveAddress" class="mdl-textfield__input action-slave-address-input" id="SlaveAddress_@Model.Number" required>
+            <label for="SlaveAddress_@Model.Number" class="mdl-textfield__label floated-label">Start Address</label>
         </div>
         <div>
             <span asp-validation-for="SlaveAddress" class="text-danger"></span>
@@ -13,8 +13,8 @@
     </div>
     <div class="form-group">
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input asp-for="StartAddress" class="mdl-textfield__input">
-            <label asp-for="StartAddress" class="mdl-textfield__label"></label>
+            <input name="StartAddress" class="mdl-textfield__input action-start-address-input" id="StartAddress_@Model.Number" required>
+            <label for="StartAddress_@Model.Number" class="mdl-textfield__label floated-label">Start Address</label>
         </div>
         <div>
             <span asp-validation-for="StartAddress" class="text-danger"></span>
@@ -22,8 +22,8 @@
     </div>
     <div class="form-group">
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input asp-for="NumberOfRegisters" class="mdl-textfield__input">
-            <label asp-for="NumberOfRegisters" class="mdl-textfield__label"></label>
+            <input name="NumberOfRegisters" class="mdl-textfield__input action-number-of-registers-input" id="NumberOfRegisters_@Model.Number" required>
+            <label for="NumberOfRegisters_@Model.Number" class="mdl-textfield__label floated-label">Number Of Registers</label>
         </div>
         <div>
             <span asp-validation-for="NumberOfRegisters" class="text-danger"></span>
@@ -31,8 +31,8 @@
     </div>
     <div class="form-group">
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input asp-for="Types" class="mdl-textfield__input">
-            <label asp-for="Types" class="mdl-textfield__label"></label>
+            <input name="Types" class="mdl-textfield__input action-types-input" id="Types_@Model.Number" required>
+            <label for="Types_@Model.Number" class="mdl-textfield__label floated-label">Types</label>
         </div>
         <div>
             <span asp-validation-for="Types" class="text-danger"></span>

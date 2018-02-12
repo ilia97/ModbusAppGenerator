@@ -111,44 +111,27 @@ namespace Core.DataAccess
                     throw new InvalidSettingsException($"Exception occured when getting application settings from \"{initFileName}\".\r\nPort must be a equal to \"IP\" or \"COM\" (line 4). For example:\r\nPort=IP");
             }
 
-            // На шестой строке после знака равно располагается идентификатор устройства.
-            if (fileLines[6].Split('=')[0].Trim().ToLower() != "deviceid")
+            // На шестой строке после знака равно располагается интервал опроса контроллеров.
+            if (fileLines[6].Split('=')[0].Trim().ToLower() != "period")
             {
-                throw new InvalidSettingsException($"Exception occured when getting application settings from \"{initFileName}\".\r\nDeviceID settings must be placed on the line 6. For example:\r\nDeviceID=10");
-            }
-
-            byte deviceId;
-            try
-            {
-                // Преобразуем к целому однобайтовому числу. 
-                deviceId = Convert.ToByte(fileLines[6].Split('=')[1]);
-            }
-            catch (Exception)
-            {
-                throw new InvalidSettingsException($"Exception occured when getting application settings from \"{initFileName}\".\r\nDeviceId must be a positive byte number (line 6). For example:\r\nDeviceID=10");
-            }
-
-            // На седьмой строке после знака равно располагается интервал опроса контроллеров.
-            if (fileLines[7].Split('=')[0].Trim().ToLower() != "period")
-            {
-                throw new InvalidSettingsException($"Exception occured when getting application settings from \"{initFileName}\".\r\nPeriod settings must be placed on the line 7. For example:\r\nPeriod=10");
+                throw new InvalidSettingsException($"Exception occured when getting application settings from \"{initFileName}\".\r\nPeriod settings must be placed on the line 6. For example:\r\nPeriod=10");
             }
 
             int period;
             try
             {
                 // Преобразуем к целому однобайтовому числу. 
-                period = Convert.ToInt32(fileLines[7].Split('=')[1]);
+                period = Convert.ToInt32(fileLines[6].Split('=')[1]);
             }
             catch (Exception)
             {
                 throw new InvalidSettingsException($"Exception occured when getting application settings from \"{initFileName}\".\r\nPeriod must be a positive integer number (line 6). For example:\r\nPeriod=10");
             }
 
-            // На восьмой строке написана строка "[Reading]" просто для удобства чтения, её игнорируем.
+            // На седьмой строке написана строка "[Reading]" просто для удобства чтения, её игнорируем.
             // На строках, начиная с девятой расположена информация о группах контроллеров.
             var groups = new List<GroupSettings>();
-            for (var i = 9; i < fileLines.Count; i++)
+            for (var i = 8; i < fileLines.Count; i++)
             {
                 try
                 {
@@ -157,6 +140,11 @@ namespace Core.DataAccess
 
                     // Все данные для группы расположены после знака "=". 
                     var slaveSettings = slaveDetails[1];
+
+                    // До первой точки с запятой располагается номер первого регистра, заполненного данными.
+                    // Обрезаем строку по этому символу.
+                    var deviceId = slaveSettings.Substring(0, slaveSettings.IndexOf(";", StringComparison.Ordinal));
+                    slaveSettings = slaveSettings.Substring(slaveSettings.IndexOf(";", StringComparison.Ordinal) + 1);
 
                     // До первой точки с запятой располагается номер первого регистра, заполненного данными.
                     // Обрезаем строку по этому символу.
@@ -174,6 +162,7 @@ namespace Core.DataAccess
                     groups.Add(new GroupSettings()
                     {
                         Id = Convert.ToInt32(slaveDetails[0]),
+                        DeviceId = Convert.ToByte(deviceId),
                         StartAddress = Convert.ToUInt16(startAddress),
                         NumberOfRegisters = Convert.ToUInt16(registersCount),
                         Types = dataTypes.Select(x =>
@@ -242,7 +231,6 @@ namespace Core.DataAccess
                             Host = ipAddress.Split(':')[0],
                             IsLoggerEnabled = isLoggerEnabled,
                             Period = period,
-                            DeviceId = deviceId,
                             Port = Convert.ToInt32(ipAddress.Split(':')[1]),
                             SlaveSettings = groups,
                             StatFlushPeriod = statFlushPeriod,
@@ -312,7 +300,6 @@ namespace Core.DataAccess
                             Parity = parity,
                             IsLoggerEnabled = isLoggerEnabled,
                             Period = period,
-                            DeviceId = deviceId,
                             SlaveSettings = groups,
                             StatFlushPeriod = statFlushPeriod,
                             Timeout = timeout

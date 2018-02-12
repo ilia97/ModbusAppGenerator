@@ -26,11 +26,6 @@ namespace Core.Models
         public int Timeout { set; get; }
 
         /// <summary>
-        /// Номер устройства.
-        /// </summary>
-        public byte DeviceId { set; get; }
-
-        /// <summary>
         /// Интервал в секундах опроса ведомых устройств.
         /// </summary>
         public int Period { set; get; }

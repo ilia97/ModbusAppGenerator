@@ -76,21 +76,30 @@ namespace ModbusAppGenerator.Core.Services
                 throw new AccessDeniedException();
             }
 
-            switch (projectEntity.ConnectionType)
+            if (projectEntity.SettingId > 0)
             {
-                case ConnectionTypes.Com:
-                    _unitOfWork.ComConnectionSettingsRepository.Delete(projectEntity.SettingId);
-                    break;
-                case ConnectionTypes.Ip:
-                    _unitOfWork.IpConnectionSettingsRepository.Delete(projectEntity.SettingId);
-                    break;
+                switch (projectEntity.ConnectionType)
+                {
+                    case ConnectionTypes.Com:
+                        _unitOfWork.ComConnectionSettingsRepository.Delete(projectEntity.SettingId);
+                        break;
+                    case ConnectionTypes.Ip:
+                        _unitOfWork.IpConnectionSettingsRepository.Delete(projectEntity.SettingId);
+                        break;
+                }
             }
 
             foreach (var action in projectEntity.Actions)
             {
-                foreach (var dataType in action.Types)
+                if (action != null)
                 {
-                    _unitOfWork.DataTypesRepository.Delete(dataType.Id);
+                    foreach (var dataType in action.Types)
+                    {
+                        if (dataType != null)
+                        {
+                            _unitOfWork.DataTypesRepository.Delete(dataType.Id);
+                        }
+                    }
                 }
 
                 _unitOfWork.SlaveActionRepository.Delete(action.Id);
@@ -393,7 +402,6 @@ namespace ModbusAppGenerator.Core.Services
                 $"Timeout={project.Timeout}\r\n" +
                 $"Port={port}\r\n" +
                 $"{connectionSettings}\r\n" +
-                $"DeviceID={project.Actions[0].SlaveAddress}\r\n" +
                 $"Period={project.Period}\r\n" +
                 $"[Reading]//Group#=DeviceID;StartingRegister;Number of Registers;Types\r\n";
 
@@ -401,7 +409,7 @@ namespace ModbusAppGenerator.Core.Services
             {
                 var types = string.Join(";", project.Actions[i].Types.Select(x => x.ToString()));
 
-                fileText += $"{i + 1}={project.Actions[i].StartAddress};{project.Actions[i].NumberOfRegisters};{types}\r\n";
+                fileText += $"{i + 1}={project.Actions[i].SlaveAddress};{project.Actions[i].StartAddress};{project.Actions[i].NumberOfRegisters};{types}\r\n";
             }
 
             using (FileStream fs = File.Create(filePath))

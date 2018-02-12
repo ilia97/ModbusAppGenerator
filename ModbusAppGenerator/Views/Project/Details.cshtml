@@ -4,76 +4,36 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
+<h2 class="text-center">@Model.Name</h2>
+<h4 class="text-center">@Model.Description</h4>
+@switch (Model.ConnectionType)
+{
+    case ModbusAppGenerator.DataAccess.Enums.ConnectionTypes.Com:
+        <h4></h4>
+        break;
+}
 
 <div>
-    <h4>DetailsViewModel</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ConnectionType)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ConnectionType)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Host)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Host)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Port)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Port)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.PortName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.PortName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.BaudRate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.BaudRate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.DataBits)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.DataBits)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Parity)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Parity)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.StopBits)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.StopBits)
-        </dd>
-    </dl>
-</div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Download", "Download", new { id = Model.Id }) |
-    @Html.ActionLink("Test", "Test", new { id = Model.Id }) 
+    <div class="mdl-grid">
+        <div class="mdl-cell mdl-cell--4-col">
+            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "mdl-button mdl-js-button mdl-button--raised mdl-button--accent primary-button" })
+        </div>
+        <div class="mdl-cell mdl-cell--4-col">
+            @Html.ActionLink("Download", "Download", new { id = Model.Id }, new { @class = "mdl-button mdl-js-button mdl-button--raised mdl-button--accent primary-button" })
+        </div>
+        <div class="mdl-cell mdl-cell--4-col">
+            @Html.ActionLink("Test", "Test", new { id = Model.Id }, new { @class = "mdl-button mdl-js-button mdl-button--raised mdl-button--accent primary-button" })
+        </div>
+    </div>
+    <div class="mdl-grid">
+        @foreach (var action in Model.Actions)
+        {
+            <div class="mdl-cell mdl-cell--4-col action">
+                Slave Device Number: @action.SlaveAddress <br />
+                Start Address: @action.StartAddress <br />
+                Number Of Registers: @action.NumberOfRegisters <br />
+                Types: @action.Types <br />
+            </div>
+        }
+    </div>
 </div>

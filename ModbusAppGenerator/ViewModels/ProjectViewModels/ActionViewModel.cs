@@ -6,6 +6,8 @@ namespace ModbusAppGenerator.ViewModels.ProjectViewModels
     {
         public int Id { set; get; }
 
+        public int Number { set; get; }
+
         [Required]
         [Display(Name = "Slave Address")]
         public int? SlaveAddress { set; get; }

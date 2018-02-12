@@ -12,6 +12,6 @@ namespace ModbusAppGenerator.ViewModels.ProjectViewModels
         public string Host { set; get; }
 
         [Required]
-        public int Port { set; get; }
+        public int? Port { set; get; }
     }
 }

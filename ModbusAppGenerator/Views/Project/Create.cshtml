@@ -12,7 +12,7 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input asp-for="Name" class="mdl-textfield__input" type="text">
+                <input asp-for="Name" class="mdl-textfield__input" autocomplete="off" required>
                 <label asp-for="Name" class="mdl-textfield__label"></label>
             </div>
             <div>
@@ -21,7 +21,7 @@
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
-                <input type="text" value="" class="mdl-textfield__input" id="ConnectionType" readonly>
+                <input type="text" value="" class="mdl-textfield__input" id="ConnectionType" readonly required>
                 <input type="hidden" value="" name="ConnectionType">
                 <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
                 <label asp-for="ConnectionType" class="mdl-textfield__label"></label>
@@ -36,7 +36,7 @@
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <textarea  asp-for="Description" class="mdl-textfield__input" type="text" rows="3"></textarea>
+                <textarea  asp-for="Description" class="mdl-textfield__input" type="text" rows="3" required></textarea>
                 <label asp-for="Description" class="mdl-textfield__label"></label>
             </div>
             <div>
