@@ -5,10 +5,10 @@
     <div class="form-group">
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
             <input name="SlaveAddress" class="mdl-textfield__input action-slave-address-input" id="SlaveAddress_@Model.Number" required>
-            <label for="SlaveAddress_@Model.Number" class="mdl-textfield__label floated-label">Start Address</label>
+            <label for="SlaveAddress_@Model.Number" class="mdl-textfield__label floated-label">Slave Address</label>
         </div>
         <div>
-            <span asp-validation-for="SlaveAddress" class="text-danger"></span>
+            @Html.ValidationMessageFor(m => m.SlaveAddress, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
@@ -17,7 +17,7 @@
             <label for="StartAddress_@Model.Number" class="mdl-textfield__label floated-label">Start Address</label>
         </div>
         <div>
-            <span asp-validation-for="StartAddress" class="text-danger"></span>
+            @Html.ValidationMessageFor(m => m.StartAddress, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
@@ -26,7 +26,7 @@
             <label for="NumberOfRegisters_@Model.Number" class="mdl-textfield__label floated-label">Number Of Registers</label>
         </div>
         <div>
-            <span asp-validation-for="NumberOfRegisters" class="text-danger"></span>
+            @Html.ValidationMessageFor(m => m.NumberOfRegisters, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
@@ -35,7 +35,7 @@
             <label for="Types_@Model.Number" class="mdl-textfield__label floated-label">Types</label>
         </div>
         <div>
-            <span asp-validation-for="Types" class="text-danger"></span>
+            @Html.ValidationMessageFor(m => m.Types, "", new { @class = "text-danger" })
         </div>
     </div>
 </div>

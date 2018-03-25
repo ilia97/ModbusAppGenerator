@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ModbusAppGenerator.ViewModels.AccountViewModels
 {
@@ -10,6 +6,7 @@ namespace ModbusAppGenerator.ViewModels.AccountViewModels
     {
         [Required]
         [EmailAddress]
+        [Display(Name = "Email")]
         public string Email { get; set; }
     }
 }

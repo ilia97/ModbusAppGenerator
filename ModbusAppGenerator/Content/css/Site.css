@@ -1,0 +1,91 @@
+﻿body {
+    padding-bottom: 20px;
+    background-color: #EAF6F6;
+    min-height: 0 !important
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+.text-danger {
+    color: #F76B8A !important;
+}
+
+.login-container {
+    width: 100%
+}
+
+.login-form {
+    width: 300px;
+    margin: 100px auto auto auto;
+}
+
+.primary-button {
+    width: 100%;
+    background-color: #66BFBF !important;
+    color: #FCFEFE !important;
+}
+
+.login-image {
+    margin: 100px auto auto auto;
+    width: 100px
+}
+
+.login-secondary-button {
+    text-decoration-line: none;
+    background-color: #F76B8A !important;
+    color: #FCFEFE !important;
+    width: 100%;
+}
+
+button a {
+    text-decoration-line: none;
+    background-color: #F76B8A !important;
+    color: #FCFEFE !important;
+}
+
+.add-project-button {
+    margin-top: 17px !important;
+    cursor: pointer;
+}
+
+.mdl-layout__header-row .mdl-navigation__link,
+.mdl-navigation__link {
+    color: black !important;
+}
+
+.mdl-textfield {
+    width: 100% !important;
+}
+
+.mdl-dialog.medium-width {
+    width: 500px !important
+}
+
+.mdl-button {
+    text-transform: none !important;
+}
+
+.action, .new-action {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.floated-label {
+    font-size: 12px !important;
+    top: 4px !important;
+    visibility: visible;
+}

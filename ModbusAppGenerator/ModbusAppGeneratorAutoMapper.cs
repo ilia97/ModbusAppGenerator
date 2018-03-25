@@ -7,59 +7,61 @@ using ModbusAppGenerator.ViewModels.ProjectViewModels;
 
 namespace ModbusAppGenerator
 {
-    public class ModbusAppGeneratorAutoMapper : Profile
+    public class ModbusAppGeneratorAutoMapper
     {
-        public ModbusAppGeneratorAutoMapper()
+        public static void Configure()
         {
-            CreateMap<User, UserEntity>();
-            CreateMap<UserEntity, User>();
+            Mapper.Initialize(cfg=>
+            {
+                cfg.CreateMap<User, UserEntity>();
+                cfg.CreateMap<UserEntity, User>();
 
-            CreateMap<Project, ProjectEntity>();
-            CreateMap<ProjectEntity, Project>();
+                cfg.CreateMap<Project, ProjectEntity>();
+                cfg.CreateMap<ProjectEntity, Project>();
 
-            CreateMap<SlaveAction, SlaveActionEntity>()
+                cfg.CreateMap<SlaveAction, SlaveActionEntity>()
                 .ForMember("Types", opt => opt.MapFrom(action =>
                 action.Types.Select(type => new DataTypeEntity()
                 {
                     SlaveActionEntityId = action.Id,
                     Type = type
-                }))) ;
-            CreateMap<SlaveActionEntity, SlaveAction>()
+                })));
+                cfg.CreateMap<SlaveActionEntity, SlaveAction>()
                 .ForMember("Types", opt => opt.MapFrom(action =>
-                action.Types.Select(type => type.Type))); ;
+                action.Types.Select(type => type.Type)));
 
-            CreateMap<IpConnectionSettings, IpConnectionSettingsEntity>();
-            CreateMap<IpConnectionSettingsEntity, IpConnectionSettings>();
+                cfg.CreateMap<IpConnectionSettings, IpConnectionSettingsEntity>();
+                cfg.CreateMap<IpConnectionSettingsEntity, IpConnectionSettings>();
 
-            CreateMap<ComConnectionSettings, ComConnectionSettingsEntity>();
-            CreateMap<ComConnectionSettingsEntity, ComConnectionSettings>();
+                cfg.CreateMap<ComConnectionSettings, ComConnectionSettingsEntity>();
+                cfg.CreateMap<ComConnectionSettingsEntity, ComConnectionSettings>();
 
-            CreateMap<IndexViewModel, UserEntity>();
-            CreateMap<UserEntity, IndexViewModel>();
+                cfg.CreateMap<IndexViewModel, UserEntity>();
+                cfg.CreateMap<UserEntity, IndexViewModel>();
 
-            CreateMap<CreateProjectViewModel, CreateIpProjectViewModel>();
-            CreateMap<CreateIpProjectViewModel, CreateProjectViewModel>();
+                cfg.CreateMap<CreateProjectViewModel, CreateIpProjectViewModel>();
+                cfg.CreateMap<CreateIpProjectViewModel, CreateProjectViewModel>();
 
-            CreateMap<CreateProjectViewModel, CreateComProjectViewModel>();
-            CreateMap<CreateComProjectViewModel, CreateProjectViewModel>();
+                cfg.CreateMap<CreateProjectViewModel, CreateComProjectViewModel>();
+                cfg.CreateMap<CreateComProjectViewModel, CreateProjectViewModel>();
 
-            CreateMap<Project, CreateIpProjectViewModel>();
-            CreateMap<CreateIpProjectViewModel, Project>();
+                cfg.CreateMap<Project, CreateIpProjectViewModel>();
+                cfg.CreateMap<CreateIpProjectViewModel, Project>();
 
-            CreateMap<Project, CreateComProjectViewModel>();
-            CreateMap<CreateComProjectViewModel, Project>();
+                cfg.CreateMap<Project, CreateComProjectViewModel>();
+                cfg.CreateMap<CreateComProjectViewModel, Project>();
 
-            CreateMap<Project, CreateProjectViewModel>();
-            CreateMap<CreateProjectViewModel, Project>();
+                cfg.CreateMap<Project, CreateProjectViewModel>();
+                cfg.CreateMap<CreateProjectViewModel, Project>();
 
-            CreateMap<Project, EditIpProjectViewModel>()
+                cfg.CreateMap<Project, EditIpProjectViewModel>()
                 .ForMember("Host", opt => opt.MapFrom(project =>
                 ((IpConnectionSettings)project.ConnectionSettings).Host))
                 .ForMember("Port", opt => opt.MapFrom(project =>
                 ((IpConnectionSettings)project.ConnectionSettings).Port));
-            CreateMap<EditIpProjectViewModel, Project>();
+                cfg.CreateMap<EditIpProjectViewModel, Project>();
 
-            CreateMap<Project, EditComProjectViewModel>()
+                cfg.CreateMap<Project, EditComProjectViewModel>()
                 .ForMember("PortName", opt => opt.MapFrom(project =>
                 ((ComConnectionSettings)project.ConnectionSettings).PortName))
                 .ForMember("BaudRate", opt => opt.MapFrom(project =>
@@ -70,20 +72,21 @@ namespace ModbusAppGenerator
                 ((ComConnectionSettings)project.ConnectionSettings).Parity))
                 .ForMember("StopBits", opt => opt.MapFrom(project =>
                 ((ComConnectionSettings)project.ConnectionSettings).StopBits));
-            CreateMap<EditComProjectViewModel, Project>();
+                cfg.CreateMap<EditComProjectViewModel, Project>();
 
-            CreateMap<Project, AddProjectActionsViewModel>();
-            CreateMap<AddProjectActionsViewModel, Project>();
+                cfg.CreateMap<Project, AddProjectActionsViewModel>();
+                cfg.CreateMap<AddProjectActionsViewModel, Project>();
 
-            CreateMap<ActionViewModel, SlaveAction>()
-                .ForMember("Types", opt => opt.MapFrom(action => 
-                action.Types.Split(';', System.StringSplitOptions.RemoveEmptyEntries).ToList()));
-            CreateMap<SlaveAction, ActionViewModel>()
-                .ForMember("Types", opt => opt.MapFrom(action => 
-                string.Join(';', action.Types.Select(type => type.ToString()))));
+                cfg.CreateMap<ActionViewModel, SlaveAction>()
+                .ForMember("Types", opt => opt.MapFrom(action =>
+                action.Types.Split(new char[] { ';' }, System.StringSplitOptions.RemoveEmptyEntries).ToList()));
+                cfg.CreateMap<SlaveAction, ActionViewModel>()
+                    .ForMember("Types", opt => opt.MapFrom(action =>
+                    string.Join(";", action.Types.Select(type => type.ToString()))));
 
-            CreateMap<Project, DetailsViewModel>();
-            CreateMap<DetailsViewModel, Project>();
+                cfg.CreateMap<Project, DetailsViewModel>();
+                cfg.CreateMap<DetailsViewModel, Project>();
+            });
         }
     }
 }

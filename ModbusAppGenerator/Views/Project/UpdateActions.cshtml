@@ -13,7 +13,7 @@
 <div class="row update-actions">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group">
-        <input asp-for="Id" class="form-control" type="hidden" />
+        @Html.HiddenFor(m => m.Id)
     </div>
     <div class="row">
         <div class="actions">
@@ -37,6 +37,5 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="~/js/viewControllers/project/update-actions.js"></script>
+    <script src="~/Scripts/viewControllers/project/update-actions.js"></script>
 }

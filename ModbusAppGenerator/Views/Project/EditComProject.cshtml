@@ -7,51 +7,53 @@
 <h2>Edit Com Project Settings</h2>
 
 <div>
-    <form asp-action="EditComProject">
+    @using (Html.BeginForm("EditComProject", "Project"))
+    {
+        @Html.AntiForgeryToken()
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input asp-for="Id" class="form-control" type="hidden" />
+        @Html.HiddenFor(m => m.Id)
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input asp-for="Name" class="mdl-textfield__input" autocomplete="off">
-                <label asp-for="Name" class="mdl-textfield__label"></label>
+                @Html.TextBoxFor(m => m.Name, new { @class = "mdl-textfield__input", autocomplete = "off" })
+                @Html.LabelFor(m => m.Name, new { @class = "mdl-textfield__label" })
             </div>
             <div>
-                <span asp-validation-for="Name" class="text-danger"></span>
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input asp-for="PortName" class="mdl-textfield__input"  autocomplete="off">
-                <label asp-for="PortName" class="mdl-textfield__label"></label>
+                @Html.TextBoxFor(m => m.PortName, new { @class = "mdl-textfield__input", autocomplete = "off" })
+                @Html.LabelFor(m => m.PortName, new { @class = "mdl-textfield__label" })
             </div>
             <div>
-                <span asp-validation-for="PortName" class="text-danger"></span>
+                @Html.ValidationMessageFor(m => m.PortName, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input asp-for="BaudRate" class="mdl-textfield__input">
-                <label asp-for="BaudRate" class="mdl-textfield__label"></label>
+                @Html.TextBoxFor(m => m.BaudRate, new { @class = "mdl-textfield__input", autocomplete = "off" })
+                @Html.LabelFor(m => m.BaudRate, new { @class = "mdl-textfield__label" })
             </div>
             <div>
-                <span asp-validation-for="BaudRate" class="text-danger"></span>
+                @Html.ValidationMessageFor(m => m.BaudRate, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input asp-for="DataBits" class="mdl-textfield__input">
-                <label asp-for="DataBits" class="mdl-textfield__label"></label>
+                @Html.TextBoxFor(m => m.DataBits, new { @class = "mdl-textfield__input", autocomplete = "off" })
+                @Html.LabelFor(m => m.DataBits, new { @class = "mdl-textfield__label" })
             </div>
             <div>
-                <span asp-validation-for="DataBits" class="text-danger"></span>
+                @Html.ValidationMessageFor(m => m.DataBits, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
-                <input type="text" asp-for="Parity" class="mdl-textfield__input" id="Parity" readonly>
-                <input type="hidden" asp-for="Parity" name="Parity">
+                @Html.TextBoxFor(m => m.Parity, new { @class = "mdl-textfield__input", autocomplete = "off", @readonly = "readonly", type = "text", value = "" })
+                <input type="hidden" for="Parity" name="Parity" value="@((int)(Model.Parity.Value))">
                 <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
-                <label asp-for="Parity" class="mdl-textfield__label"></label>
+                @Html.LabelFor(m => m.Parity, new { @class = "mdl-textfield__label" })
                 <ul for="Parity" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
                     <li class="mdl-menu__item" data-val="0">None</li>
                     <li class="mdl-menu__item" data-val="1">Odd</li>
@@ -61,15 +63,15 @@
                 </ul>
             </div>
             <div>
-                <span asp-validation-for="Parity" class="text-danger"></span>
+                @Html.ValidationMessageFor(m => m.Parity, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
-                <input type="text" asp-for="StopBits" class="mdl-textfield__input" id="StopBits" readonly>
-                <input type="hidden" asp-for="StopBits" name="StopBits">
+                @Html.TextBoxFor(m => m.StopBits, new { @class = "mdl-textfield__input", autocomplete = "off", @readonly = "readonly", type = "text", value = "" })
+                <input type="hidden" for="StopBits" name="StopBits" value="@((int)(Model.StopBits.Value))">
                 <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
-                <label asp-for="StopBits" class="mdl-textfield__label"></label>
+                @Html.LabelFor(m => m.StopBits, new { @class = "mdl-textfield__label" })
                 <ul for="StopBits" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
                     <li class="mdl-menu__item" data-val="0">0</li>
                     <li class="mdl-menu__item" data-val="1">1</li>
@@ -78,24 +80,20 @@
                 </ul>
             </div>
             <div>
-                <span asp-validation-for="StopBits" class="text-danger"></span>
+                @Html.ValidationMessageFor(m => m.StopBits, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <textarea asp-for="Description" class="mdl-textfield__input" type="text" rows="3"></textarea>
-                <label asp-for="Description" class="mdl-textfield__label"></label>
+                @Html.TextAreaFor(m => m.Description, new { @class = "mdl-textfield__input", type = "text", rows = "3" })
+                @Html.LabelFor(m => m.Description, new { @class = "mdl-textfield__label" })
             </div>
             <div>
-                <span asp-validation-for="Description" class="text-danger"></span>
+                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
             <input type="submit" value="Save" class="mdl-button mdl-js-button mdl-button--raised primary-button" />
         </div>
-    </form>
+    }
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

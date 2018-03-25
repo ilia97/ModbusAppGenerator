@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNet.Identity;
 using ModbusAppGenerator.Core.Models;
-using ModbusAppGenerator.Core.Services;
 using ModbusAppGenerator.Core.Services.Interfaces;
 using ModbusAppGenerator.ViewModels.ProjectViewModels;
 
@@ -17,32 +15,30 @@ namespace ModbusAppGenerator.Controllers
     public class ProjectController : BaseController
     {
         private readonly IProjectService _projectService;
-        private readonly IMapper _mapper;
 
-        public ProjectController(IMapper mapper, IProjectService projectService)
+        public ProjectController(IProjectService projectService)
         {
-            _mapper = mapper;
             _projectService = projectService;
         }
 
         public ActionResult Index()
         {
-            var currentUserId = GetCurrentUserId();
+            var currentUserId = User.Identity.GetUserId();
 
             var usersProjects = _projectService.GetUserProjects(currentUserId);
 
-            var model = _mapper.Map<IList<Project>, IList<ProjectListItemViewModel>>(usersProjects);
+            var model = Mapper.Map<IList<Project>, IList<ProjectListItemViewModel>>(usersProjects);
 
             return View(model);
         }
 
         public ActionResult Details(int id)
         {
-            var project = _projectService.Get(id, GetCurrentUserId());
+            var project = _projectService.Get(id, User.Identity.GetUserId());
 
-            var model = _mapper.Map<Project, DetailsViewModel>(project);
+            var model = Mapper.Map<Project, DetailsViewModel>(project);
 
-            if (project.ConnectionSettings.GetType() == typeof (IpConnectionSettings))
+            if (project.ConnectionSettings.GetType() == typeof(IpConnectionSettings))
             {
                 model.ConnectionType = DataAccess.Enums.ConnectionTypes.Ip;
                 model.Host = ((IpConnectionSettings)project.ConnectionSettings).Host;
@@ -75,9 +71,9 @@ namespace ModbusAppGenerator.Controllers
                 return View(model);
             }
 
-            var project = _mapper.Map<CreateProjectViewModel, Project>(model);
+            var project = Mapper.Map<CreateProjectViewModel, Project>(model);
 
-            var newProjectId = _projectService.Add(project, GetCurrentUserId());
+            var newProjectId = _projectService.Add(project, User.Identity.GetUserId());
 
             switch (model.ConnectionType)
             {
@@ -92,9 +88,9 @@ namespace ModbusAppGenerator.Controllers
 
         public ActionResult CreateIpProject(int projectId)
         {
-            var project = _projectService.Get(projectId, GetCurrentUserId());
+            var project = _projectService.Get(projectId, User.Identity.GetUserId());
 
-            var ipProject = _mapper.Map<Project, CreateIpProjectViewModel>(project);
+            var ipProject = Mapper.Map<Project, CreateIpProjectViewModel>(project);
 
             return View(ipProject);
         }
@@ -108,7 +104,7 @@ namespace ModbusAppGenerator.Controllers
                 return View(model);
             }
 
-            var project = _projectService.Get(model.Id, GetCurrentUserId());
+            var project = _projectService.Get(model.Id, User.Identity.GetUserId());
 
             project.ConnectionSettings = new IpConnectionSettings()
             {
@@ -116,16 +112,16 @@ namespace ModbusAppGenerator.Controllers
                 Port = model.Port.Value
             };
 
-            _projectService.Edit(project, GetCurrentUserId());
+            _projectService.Edit(project, User.Identity.GetUserId());
 
             return RedirectToAction("UpdateActions", new { id = project.Id });
         }
-        
+
         public ActionResult CreateComProject(int projectId)
         {
-            var project = _projectService.Get(projectId, GetCurrentUserId());
+            var project = _projectService.Get(projectId, User.Identity.GetUserId());
 
-            var comProject = _mapper.Map<Project, CreateComProjectViewModel>(project);
+            var comProject = Mapper.Map<Project, CreateComProjectViewModel>(project);
 
             return View(comProject);
         }
@@ -139,7 +135,7 @@ namespace ModbusAppGenerator.Controllers
                 return View(model);
             }
 
-            var project = _projectService.Get(model.Id, GetCurrentUserId());
+            var project = _projectService.Get(model.Id, User.Identity.GetUserId());
 
             project.ConnectionSettings = new ComConnectionSettings()
             {
@@ -150,18 +146,18 @@ namespace ModbusAppGenerator.Controllers
                 StopBits = model.StopBits.Value
             };
 
-            _projectService.Edit(project, GetCurrentUserId());
+            _projectService.Edit(project, User.Identity.GetUserId());
 
-            return RedirectToAction("UpdateActions", new { id = project.Id});
+            return RedirectToAction("UpdateActions", new { id = project.Id });
         }
 
         public ActionResult UpdateActions(int id)
         {
-            var project = _projectService.Get(id, GetCurrentUserId());
+            var project = _projectService.Get(id, User.Identity.GetUserId());
 
-            var model = _mapper.Map<Project, AddProjectActionsViewModel>(project);
+            var model = Mapper.Map<Project, AddProjectActionsViewModel>(project);
 
-            for (int  i = 0; i < model.Actions.Count; i++)
+            for (int i = 0; i < model.Actions.Count; i++)
             {
                 model.Actions[i].Number = i;
             }
@@ -177,17 +173,17 @@ namespace ModbusAppGenerator.Controllers
                 return View(model);
             }
 
-            var actions = _mapper.Map<List<ActionViewModel>, List<SlaveAction>>(model.Actions);
+            var actions = Mapper.Map<List<ActionViewModel>, List<SlaveAction>>(model.Actions);
 
-            _projectService.UpdateActions(model.Id, actions, GetCurrentUserId());
+            _projectService.UpdateActions(model.Id, actions, User.Identity.GetUserId());
 
             return RedirectToAction("Details", new { id = model.Id });
         }
-        
+
         public ActionResult Edit(int id)
         {
-            var project = _projectService.Get(id, GetCurrentUserId());
-            
+            var project = _projectService.Get(id, User.Identity.GetUserId());
+
             if (project.ConnectionSettings.GetType() == typeof(IpConnectionSettings))
             {
                 return RedirectToAction("EditIpProject", new { id });
@@ -202,9 +198,9 @@ namespace ModbusAppGenerator.Controllers
 
         public ActionResult EditIpProject(int id)
         {
-            var project = _projectService.Get(id, GetCurrentUserId());
+            var project = _projectService.Get(id, User.Identity.GetUserId());
 
-            var model = _mapper.Map<Project, EditIpProjectViewModel>(project);
+            var model = Mapper.Map<Project, EditIpProjectViewModel>(project);
 
             return View(model);
         }
@@ -217,24 +213,24 @@ namespace ModbusAppGenerator.Controllers
                 return View(model);
             }
 
-            var connectionSettings = (IpConnectionSettings)_projectService.Get(model.Id, GetCurrentUserId()).ConnectionSettings;
+            var connectionSettings = (IpConnectionSettings)_projectService.Get(model.Id, User.Identity.GetUserId()).ConnectionSettings;
             connectionSettings.Host = model.Host;
             connectionSettings.Port = model.Port;
 
-            var project = _mapper.Map<EditIpProjectViewModel, Project>(model);
+            var project = Mapper.Map<EditIpProjectViewModel, Project>(model);
 
             project.ConnectionSettings = connectionSettings;
 
-             _projectService.Edit(project, GetCurrentUserId());
+            _projectService.Edit(project, User.Identity.GetUserId());
 
             return RedirectToAction("UpdateActions", new { id = project.Id });
         }
 
         public ActionResult EditComProject(int id)
         {
-            var project = _projectService.Get(id, GetCurrentUserId());
+            var project = _projectService.Get(id, User.Identity.GetUserId());
 
-            var model = _mapper.Map<Project, EditComProjectViewModel>(project);
+            var model = Mapper.Map<Project, EditComProjectViewModel>(project);
 
             return View(model);
         }
@@ -247,33 +243,33 @@ namespace ModbusAppGenerator.Controllers
                 return View(model);
             }
 
-            var connectionSettings = (ComConnectionSettings)_projectService.Get(model.Id, GetCurrentUserId()).ConnectionSettings;
+            var connectionSettings = (ComConnectionSettings)_projectService.Get(model.Id, User.Identity.GetUserId()).ConnectionSettings;
             connectionSettings.BaudRate = model.BaudRate.Value;
             connectionSettings.DataBits = model.DataBits.Value;
             connectionSettings.Parity = model.Parity.Value;
             connectionSettings.PortName = model.PortName;
             connectionSettings.StopBits = model.StopBits.Value;
 
-            var project = _mapper.Map<EditComProjectViewModel, Project>(model);
+            var project = Mapper.Map<EditComProjectViewModel, Project>(model);
 
             project.ConnectionSettings = connectionSettings;
 
-            _projectService.Edit(project, GetCurrentUserId());
+            _projectService.Edit(project, User.Identity.GetUserId());
 
             return RedirectToAction("UpdateActions", new { id = project.Id });
         }
 
         public ActionResult Delete(int id)
         {
-            _projectService.Delete(id, GetCurrentUserId());
+            _projectService.Delete(id, User.Identity.GetUserId());
 
             return RedirectToAction("Index");
         }
 
         public ActionResult Download(int id)
         {
-            var zipFile = _projectService.DownloadProject(id, GetCurrentUserId());
-            var project = _projectService.Get(id, GetCurrentUserId());
+            var zipFile = _projectService.DownloadProject(id, User.Identity.GetUserId(), Server.MapPath("~/"));
+            var project = _projectService.Get(id, User.Identity.GetUserId());
 
             string contentType = "application/zip";
             HttpContext.Response.ContentType = contentType;
@@ -283,6 +279,16 @@ namespace ModbusAppGenerator.Controllers
             };
 
             return result;
+        }
+        
+        public ActionResult Test(int id)
+        {
+            var results = _projectService.TestProject(id, User.Identity.GetUserId());
+
+            var jsonResult = new JsonResult();
+            jsonResult.Data = results;
+
+            return jsonResult;
         }
     }
 }

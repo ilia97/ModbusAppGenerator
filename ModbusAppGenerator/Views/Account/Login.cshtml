@@ -1,45 +1,43 @@
-﻿@using System.Collections.Generic
-@using System.Linq
-@using Microsoft.AspNetCore.Http
-@using ModbusAppGenerator.DataAccess.Entities
+﻿@using ModbusAppGenerator.ViewModels.AccountViewModels
 @model LoginViewModel
-@inject SignInManager<UserEntity> SignInManager
 
 @{
     ViewData["Title"] = "Log in";
-    Layout = "_LayoutEmpty";
+    Layout = "~/Views/Shared/_LayoutEmpty.cshtml";
 }
 
 <div class="login-container">
     <div class="login-image">
-        <img src="~/images/computer-network-512.png" width="100" height="100" />
+        <img src="~/Content/images/computer-network-512.png" width="100" height="100" />
     </div>
     <div class="login-form">
         <section>
-            <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+            @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
                 @*<div asp-validation-summary="All" class="text-danger"></div>*@
                 <div class="form-group">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input asp-for="Email" class="mdl-textfield__input" type="text">
-                        <label asp-for="Email" class="mdl-textfield__label"></label>
+                        @Html.TextBoxFor(m => m.Email, new { @class = "mdl-textfield__input" })
+                        @Html.LabelFor(m => m.Email, new { @class = "mdl-textfield__label" })
                     </div>
                     <div>
-                        <span asp-validation-for="Email" class="text-danger"></span>
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input asp-for="Password" class="mdl-textfield__input" type="password">
-                        <label asp-for="Password" class="mdl-textfield__label"></label>
+                        @Html.PasswordFor(m => m.Password, new { @class = "mdl-textfield__input" })
+                        @Html.LabelFor(m => m.Password, new { @class = "mdl-textfield__label" })
                     </div>
                     <div>
-                        <span asp-validation-for="Password" class="text-danger"></span>
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="checkbox">
-                        <label asp-for="RememberMe" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-1">
-                            <input asp-for="RememberMe" type="checkbox" id="checkbox-1" class="mdl-checkbox__input" checked>
+                        <label for="RememberMe" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+                            <input for="RememberMe" type="checkbox" id="RememberMe" class="mdl-checkbox__input" checked>
                             <span class="mdl-checkbox__label">@Html.DisplayNameFor(m => m.RememberMe)</span>
                         </label>
                     </div>
@@ -47,19 +45,19 @@
                 <div class="form-group">
                     <button type="submit" class="mdl-button mdl-js-button mdl-button--raised primary-button">Login</button>
                 </div>
-            </form>
+            }
         </section>
         <div class="form-group text-center">
             <p>
-                <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent login-secondary-button" asp-action="ForgotPassword">Forgot your password?</a>
+                @Html.ActionLink("Forgot your password?", "ForgotPassword", null, new { @class = "mdl-button mdl-js-button mdl-button--raised mdl-button--accent login-secondary-button" })
             </p>
             <p>
-                <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent login-secondary-button" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]">Register as a new user?</a>
+                @Html.ActionLink("Register as a new user?", "Register", new { ReturnUrl = ViewData["ReturnUrl"] }, new { @class = "mdl-button mdl-js-button mdl-button--raised mdl-button--accent login-secondary-button" })
             </p>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    @await Html.PartialAsync("_ValidationScriptsPartial")
+    @Scripts.Render("~/bundles/jqueryval")
 }

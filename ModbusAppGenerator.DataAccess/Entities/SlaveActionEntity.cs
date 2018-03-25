@@ -13,16 +13,18 @@ namespace ModbusAppGenerator.DataAccess.Entities
         {
             Types = new List<DataTypeEntity>();
         }
-        
+
+        [Key]
         public int Id { set; get; }
-        
+
+        [ForeignKey("Project")]
         public int ProjectId { set; get; }
         public ProjectEntity Project { set; get; }
 
         public int SlaveAddress { set; get; }
 
         public int StartAddress { set; get; }
-        
+
         public int NumberOfRegisters { set; get; }
 
         public virtual List<DataTypeEntity> Types { set; get; }

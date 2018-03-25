@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using ModbusAppGenerator.Core.Models;
 
 namespace ModbusAppGenerator.Core.Services.Interfaces
@@ -18,6 +17,8 @@ namespace ModbusAppGenerator.Core.Services.Interfaces
 
         void UpdateActions(int projectId, List<SlaveAction> actions, string userId);
 
-        byte[] DownloadProject(int projectId, string userId);
+        byte[] DownloadProject(int projectId, string userId, string currentDirectoryRoot);
+
+        Dictionary<int, string> TestProject(int projectId, string userId);
     }
 }

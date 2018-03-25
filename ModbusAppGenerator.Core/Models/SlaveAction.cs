@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ModbusAppGenerator.DataAccess.Enums;
 
 namespace ModbusAppGenerator.Core.Models
@@ -11,7 +12,7 @@ namespace ModbusAppGenerator.Core.Models
         }
 
         public int Id { set; get; }
-        
+
         public Project Project { set; get; }
 
         public int SlaveAddress { set; get; }

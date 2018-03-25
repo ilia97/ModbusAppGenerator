@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using AutoMapper;
@@ -12,27 +13,27 @@ using ModbusAppGenerator.DataAccess;
 using ModbusAppGenerator.DataAccess.Entities;
 using ModbusAppGenerator.DataAccess.Enums;
 using ModbusAppGenerator.DataAccess.UnitOfWork;
+using ModbusAppGenerator.ModbusApp.Core.DataAccess;
+using ModbusAppGenerator.ModbusApp.Core.Services;
 
 namespace ModbusAppGenerator.Core.Services
 {
     public class ProjectService : IProjectService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
-        public ProjectService(IMapper mapper, IUnitOfWork unitOfWork)
+        public ProjectService(IUnitOfWork unitOfWork)
         {
-            _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
 
         public int Add(Project project, string userId)
         {
-            var projectEntity = _mapper.Map<Project, ProjectEntity>(project);
+            var projectEntity = Mapper.Map<Project, ProjectEntity>(project);
 
-            foreach(var device in project.Actions)
+            foreach (var device in project.Actions)
             {
-                var deviceEntity = _mapper.Map<SlaveAction, SlaveActionEntity>(device);
+                var deviceEntity = Mapper.Map<SlaveAction, SlaveActionEntity>(device);
 
                 _unitOfWork.SlaveActionRepository.Insert(deviceEntity);
             }
@@ -41,7 +42,7 @@ namespace ModbusAppGenerator.Core.Services
             {
                 if (project.ConnectionSettings.GetType() == typeof(IpConnectionSettings))
                 {
-                    var ipConnectionSettings = _mapper.Map<IpConnectionSettings, IpConnectionSettingsEntity>((IpConnectionSettings)project.ConnectionSettings);
+                    var ipConnectionSettings = Mapper.Map<IpConnectionSettings, IpConnectionSettingsEntity>((IpConnectionSettings)project.ConnectionSettings);
 
                     _unitOfWork.IpConnectionSettingsRepository.Insert(ipConnectionSettings);
 
@@ -50,7 +51,7 @@ namespace ModbusAppGenerator.Core.Services
                 }
                 else if (project.ConnectionSettings.GetType() == typeof(ComConnectionSettings))
                 {
-                    var comConnectionSettings = _mapper.Map<ComConnectionSettings, ComConnectionSettingsEntity>((ComConnectionSettings)project.ConnectionSettings);
+                    var comConnectionSettings = Mapper.Map<ComConnectionSettings, ComConnectionSettingsEntity>((ComConnectionSettings)project.ConnectionSettings);
 
                     _unitOfWork.ComConnectionSettingsRepository.Insert(comConnectionSettings);
 
@@ -127,39 +128,42 @@ namespace ModbusAppGenerator.Core.Services
 
             if (project.ConnectionSettings.GetType() == typeof(IpConnectionSettings))
             {
+                IpConnectionSettingsEntity ipConnectionSettings = null;
+
                 if (project.ConnectionSettings.Id == 0)
                 {
-                    var ipConnectionSettings = _mapper.Map<IpConnectionSettings, IpConnectionSettingsEntity>((IpConnectionSettings)project.ConnectionSettings);
+                    ipConnectionSettings = Mapper.Map<IpConnectionSettings, IpConnectionSettingsEntity>((IpConnectionSettings)project.ConnectionSettings);
 
                     _unitOfWork.IpConnectionSettingsRepository.Insert(ipConnectionSettings);
-                    _unitOfWork.Save();
-
-                    projectEntity.SettingId = ipConnectionSettings.Id;
                 }
                 else
                 {
-                    var ipConnectionSettings = _unitOfWork.IpConnectionSettingsRepository.GetById(project.ConnectionSettings.Id);
+                    ipConnectionSettings = _unitOfWork.IpConnectionSettingsRepository.GetById(project.ConnectionSettings.Id);
 
-                    _mapper.Map((IpConnectionSettings)project.ConnectionSettings, ipConnectionSettings);
+                    Mapper.Map((IpConnectionSettings)project.ConnectionSettings, ipConnectionSettings);
 
                     _unitOfWork.IpConnectionSettingsRepository.Update(ipConnectionSettings);
-                    _unitOfWork.Save();
-
-                    projectEntity.SettingId = ipConnectionSettings.Id;
                 }
-                
+
+                _unitOfWork.Save();
+
+                projectEntity.SettingId = ipConnectionSettings.Id;
                 projectEntity.ConnectionType = ConnectionTypes.Ip;
             }
             else if (project.ConnectionSettings.GetType() == typeof(ComConnectionSettings))
             {
-                var comConnectionSettings = _mapper.Map<ComConnectionSettings, ComConnectionSettingsEntity>((ComConnectionSettings)project.ConnectionSettings);
+                ComConnectionSettingsEntity comConnectionSettings = null;
 
                 if (project.ConnectionSettings.Id == 0)
                 {
+                    comConnectionSettings = Mapper.Map<ComConnectionSettings, ComConnectionSettingsEntity>((ComConnectionSettings)project.ConnectionSettings);
+
                     _unitOfWork.ComConnectionSettingsRepository.Insert(comConnectionSettings);
                 }
                 else
                 {
+                    comConnectionSettings = _unitOfWork.ComConnectionSettingsRepository.GetById(project.ConnectionSettings.Id);
+
                     _unitOfWork.ComConnectionSettingsRepository.Update(comConnectionSettings);
                 }
 
@@ -184,26 +188,26 @@ namespace ModbusAppGenerator.Core.Services
 
             projectEntity.User = _unitOfWork.UserRepository.GetById(projectEntity.UserId);
 
-            var project = _mapper.Map<ProjectEntity, Project>(projectEntity);
+            var project = Mapper.Map<ProjectEntity, Project>(projectEntity);
 
             switch (projectEntity.ConnectionType)
             {
                 case ConnectionTypes.Ip:
                     var ipConnectionSettings = _unitOfWork.IpConnectionSettingsRepository.GetById(projectEntity.SettingId) ?? new IpConnectionSettingsEntity();
 
-                    project.ConnectionSettings = _mapper.Map<IpConnectionSettingsEntity, IpConnectionSettings>(ipConnectionSettings);
+                    project.ConnectionSettings = Mapper.Map<IpConnectionSettingsEntity, IpConnectionSettings>(ipConnectionSettings);
 
                     break;
                 case ConnectionTypes.Com:
                     var comConnectionSettings = _unitOfWork.ComConnectionSettingsRepository.GetById(projectEntity.SettingId) ?? new ComConnectionSettingsEntity();
 
-                    project.ConnectionSettings = _mapper.Map<ComConnectionSettingsEntity, ComConnectionSettings>(comConnectionSettings);
+                    project.ConnectionSettings = Mapper.Map<ComConnectionSettingsEntity, ComConnectionSettings>(comConnectionSettings);
 
                     break;
             }
 
             var projectSlaveActionEntities = (List<SlaveActionEntity>)_unitOfWork.SlaveActionRepository.Get(x => x.ProjectId == project.Id);
-            project.Actions = _mapper.Map<List<SlaveActionEntity>, List<SlaveAction>>(projectSlaveActionEntities);
+            project.Actions = Mapper.Map<List<SlaveActionEntity>, List<SlaveAction>>(projectSlaveActionEntities);
 
             project.Actions.ForEach(action =>
             {
@@ -220,7 +224,7 @@ namespace ModbusAppGenerator.Core.Services
         {
             var projectsList = _unitOfWork.ProjectRepository.Get(x => x.UserId == userId);
 
-            return _mapper.Map<IList<ProjectEntity>, IList<Project>>(projectsList);
+            return Mapper.Map<IList<ProjectEntity>, IList<Project>>(projectsList);
         }
 
         public void UpdateActions(int projectId, List<SlaveAction> actions, string userId)
@@ -238,7 +242,7 @@ namespace ModbusAppGenerator.Core.Services
 
                 if (action.Id == 0)
                 {
-                    slaveActionEntity = _mapper.Map<SlaveAction, SlaveActionEntity>(action);
+                    slaveActionEntity = Mapper.Map<SlaveAction, SlaveActionEntity>(action);
                     slaveActionEntity.ProjectId = projectId;
 
                     _unitOfWork.SlaveActionRepository.Insert(slaveActionEntity);
@@ -251,7 +255,7 @@ namespace ModbusAppGenerator.Core.Services
                     slaveActionEntity.ProjectId = projectId;
                     slaveActionEntity.SlaveAddress = action.SlaveAddress;
                     slaveActionEntity.StartAddress = action.StartAddress;
-                    
+
                     _unitOfWork.SlaveActionRepository.Update(slaveActionEntity);
 
                     var dataTypes = _unitOfWork.DataTypesRepository.Get(x => x.SlaveActionEntityId == slaveActionEntity.Id);
@@ -279,24 +283,27 @@ namespace ModbusAppGenerator.Core.Services
             _unitOfWork.Save();
         }
 
-        public byte[] DownloadProject(int projectId, string userId)
+        public byte[] DownloadProject(int projectId, string userId, string currentDirectoryRoot)
         {
             var project = Get(projectId, userId);
 
             // TODO: Add rebuilding a project
-
-            var consoleAppBinFolderRoute = $"{Directory.GetCurrentDirectory()}\\..\\ModbusApp\\ConsoleApp\\bin\\Release";
+            
+            var consoleAppBinFolderRoute = $"{currentDirectoryRoot}\\..\\ModbusAppGenerator.ModbusApp.Console\\bin\\Release";
             var modbusFilesRoutes = new string[]
             {
-                "3MBP.exe",
-                "3MBP.exe.config",
+                "ModbusAppGenerator.ModbusApp.Console.exe",
+                "ModbusAppGenerator.ModbusApp.Console.exe.config",
                 "NModbus4.dll",
-                "Core.dll",
+                "ModbusAppGenerator.ModbusApp.Core.dll",
                 "Autofac.dll"
             };
 
-            var tempFolderRoute = $"{Directory.GetCurrentDirectory()}\\Temp";
+            var tempFolderRoute = $"{currentDirectoryRoot}\\Temp";
             var tempAppFolderRoute = $"{tempFolderRoute}\\AppFiles";
+
+            Directory.CreateDirectory(tempAppFolderRoute);
+
             var zipFileRoute = $"{tempFolderRoute}\\3MBP.zip";
 
             foreach (var modbusFileName in modbusFilesRoutes)
@@ -325,6 +332,84 @@ namespace ModbusAppGenerator.Core.Services
             }
 
             return bytes;
+        }
+
+        public Dictionary<int, string> TestProject(int projectId, string userId)
+        {
+            var project = this.Get(projectId, userId);
+
+            var modbusService = new ModbusService(new ModbusSlavesRepository());
+
+            var slaveSettings = new List<ModbusApp.Core.Models.GroupSettings>();
+
+            foreach (var action in project.Actions)
+            {
+                slaveSettings.Add(new ModbusApp.Core.Models.GroupSettings()
+                {
+                    Id = action.Id,
+                    DeviceId = (byte)action.SlaveAddress,
+                    StartAddress = (ushort)action.StartAddress,
+                    NumberOfRegisters = (ushort)action.NumberOfRegisters,
+                    Types = action.Types.Select(type =>
+                    {
+                        switch (type)
+                        {
+                            case ModbusDataType.Hex:
+                                return Tuple.Create(2, ModbusApp.Core.Misc.Enums.ModbusDataType.Hex);
+                            case ModbusDataType.SInt16:
+                                return Tuple.Create(2, ModbusApp.Core.Misc.Enums.ModbusDataType.SInt16);
+                            case ModbusDataType.SInt32:
+                                return Tuple.Create(4, ModbusApp.Core.Misc.Enums.ModbusDataType.SInt32);
+                            case ModbusDataType.UInt16:
+                                return Tuple.Create(2, ModbusApp.Core.Misc.Enums.ModbusDataType.UInt16);
+                            case ModbusDataType.UInt32:
+                                return Tuple.Create(4, ModbusApp.Core.Misc.Enums.ModbusDataType.UInt32);
+                            case ModbusDataType.UtcTimestamp:
+                                return Tuple.Create(4, ModbusApp.Core.Misc.Enums.ModbusDataType.UtcTimestamp);
+                            case ModbusDataType.String:
+                                return null;
+                        }
+
+                        return null;
+                    }).ToList()
+                });
+            }
+
+            if (project.ConnectionSettings is IpConnectionSettings)
+            {
+                var connectionSettings = project.ConnectionSettings as IpConnectionSettings;
+
+                return modbusService.GetDataFromSlaves(new ModbusApp.Core.Models.MasterSettingsIp()
+                {
+                    Host = connectionSettings.Host,
+                    IsLoggerEnabled = project.IsLoggerEnabled,
+                    Period = project.Period,
+                    Port = connectionSettings.Port,
+                    SlaveSettings = slaveSettings,
+                    StatFlushPeriod = project.StatFlushPeriod,
+                    Timeout = project.Timeout
+                });
+            }
+            else if (project.ConnectionSettings is ComConnectionSettings)
+            {
+                var connectionSettings = project.ConnectionSettings as ComConnectionSettings;
+
+                return modbusService.GetDataFromSlaves(new ModbusApp.Core.Models.MasterSettingsCom()
+                {
+                    IsLoggerEnabled = project.IsLoggerEnabled,
+                    Period = project.Period,
+                    SlaveSettings = slaveSettings,
+                    StatFlushPeriod = project.StatFlushPeriod,
+                    Timeout = project.Timeout,
+                    BaudRate = connectionSettings.BaudRate,
+                    DataBits = connectionSettings.DataBits,
+                    Parity = connectionSettings.Parity,
+                    PortName = connectionSettings.PortName,
+                    StopBits = connectionSettings.StopBits
+                });
+            }
+
+            throw new Exception();
         }
 
         private void CreateSettingsFile(string filePath, Project project)
@@ -394,7 +479,7 @@ namespace ModbusAppGenerator.Core.Services
                 throw new Exception();
             }
 
-            var fileText = 
+            var fileText =
                 $"//comments\r\n" +
                 $"[Main]\r\n" +
                 $"Logging={logging}\r\n" +
@@ -405,7 +490,7 @@ namespace ModbusAppGenerator.Core.Services
                 $"Period={project.Period}\r\n" +
                 $"[Reading]//Group#=DeviceID;StartingRegister;Number of Registers;Types\r\n";
 
-            for(int i = 0; i < project.Actions.Count; i++)
+            for (int i = 0; i < project.Actions.Count; i++)
             {
                 var types = string.Join(";", project.Actions[i].Types.Select(x => x.ToString()));
 

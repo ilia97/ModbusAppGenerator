@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.IO.Ports;
 using ModbusAppGenerator.DataAccess.Enums;
 
 namespace ModbusAppGenerator.ViewModels.ProjectViewModels

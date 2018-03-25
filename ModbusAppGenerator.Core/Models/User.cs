@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace ModbusAppGenerator.Core.Models
 {
-    public class User: IdentityUser
-    { 
+    public class User : IdentityUser
+    {
         public User()
         {
             Projects = new List<Project>();

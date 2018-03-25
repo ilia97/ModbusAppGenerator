@@ -1,8 +1,8 @@
-﻿using ModbusAppGenerator.DataAccess.Enums;
+﻿using System.IO.Ports;
 
 namespace ModbusAppGenerator.Core.Models
 {
-    public class ComConnectionSettings: ConnectionSettings
+    public class ComConnectionSettings : ConnectionSettings
     {
         public string PortName { set; get; }
 

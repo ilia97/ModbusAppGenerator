@@ -1,12 +1,11 @@
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity;
+﻿using System.Collections.Generic;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace ModbusAppGenerator.DataAccess.Entities
 {
-    // Add profile data for application users by adding properties to the UserEntity class
     public class UserEntity : IdentityUser
     {
-        public UserEntity(): base()
+        public UserEntity() : base()
         {
             Projects = new List<ProjectEntity>();
         }

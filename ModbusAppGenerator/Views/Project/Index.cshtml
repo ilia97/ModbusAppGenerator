@@ -10,7 +10,7 @@
     </div>
     <div class="mdl-cell mdl-cell--1-col">
         <p>
-            <a asp-action="Create" class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored add-project-button">
+            <a href='@Url.Action("Create")' class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored add-project-button">
                 <i class="material-icons">add</i>
             </a>
         </p>
@@ -20,17 +20,14 @@
     @foreach (var item in Model)
     {
         <div class="mdl-cell mdl-cell--4-col">
-            <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+            <div class="demo-card-wide mdl-card mdl-shadow--2dp" style="height: 100%">
                 <div class="mdl-card__title">
-                    <h2 class="mdl-card__title-text">@item.Name</h2>
+                    <a href='@Url.Action("Details", new { id = item.Id })' class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                        <h2 class="mdl-card__title-text">@item.Name</h2>
+                    </a>
                 </div>
                 <div class="mdl-card__supporting-text">
                     @item.Description
-                </div>
-                <div class="mdl-card__actions mdl-card--border">
-                    <a href='@Url.Action("Details", new { id = item.Id })' class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                        Get Started
-                    </a>
                 </div>
                 <div class="mdl-card__menu">
                     <a href='@Url.Action("Edit", new { id = item.Id })' class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
@@ -60,6 +57,5 @@
 </dialog>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="~/js/viewControllers/project/list.js"></script>
+    @Scripts.Render("~/Scripts/viewControllers/project/list.js")
 }
