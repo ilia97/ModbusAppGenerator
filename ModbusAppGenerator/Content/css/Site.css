@@ -21,11 +21,13 @@
     color: #F76B8A !important;
 }
 
-.login-container {
+.login-container,
+.register-container {
     width: 100%
 }
 
-.login-form {
+.login-form,
+.register-form {
     width: 300px;
     margin: 100px auto auto auto;
 }
@@ -36,12 +38,14 @@
     color: #FCFEFE !important;
 }
 
-.login-image {
+.login-image,
+.register-image {
     margin: 100px auto auto auto;
     width: 100px
 }
 
-.login-secondary-button {
+.login-secondary-button,
+.register-secondary-button {
     text-decoration-line: none;
     background-color: #F76B8A !important;
     color: #FCFEFE !important;

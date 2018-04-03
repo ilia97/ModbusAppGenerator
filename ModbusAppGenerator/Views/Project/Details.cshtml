@@ -19,7 +19,7 @@
             @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "mdl-button mdl-js-button mdl-button--raised mdl-button--accent primary-button" })
         </div>
         <div class="mdl-cell mdl-cell--4-col">
-            @Html.ActionLink("Download", "Download", new { id = Model.Id }, new { @class = "mdl-button mdl-js-button mdl-button--raised mdl-button--accent primary-button" })
+            <a id="download-button" href="#" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent primary-button">Download</a>
         </div>
         <div class="mdl-cell mdl-cell--4-col">
             @Html.ActionLink("Test", "Test", new { id = Model.Id }, new { @class = "mdl-button mdl-js-button mdl-button--raised mdl-button--accent primary-button" })
@@ -37,3 +37,25 @@
         }
     </div>
 </div>
+
+<dialog class="mdl-dialog medium-width text-center">
+    <input id="dialog-download-project-id" type="hidden" value="@Model.Id" />
+    <h4 class="mdl-dialog__title">Download</h4>
+    <div class="mdl-dialog__content">
+        <p id="dialog-body">
+            Please, select what type of application you want to download.
+        </p>
+    </div>
+    <div class="mdl-grid">
+        <div class="mdl-cell mdl-cell--6-col">
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent primary-button console">Console Application</button>
+        </div>
+        <div class="mdl-cell mdl-cell--6-col">
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent primary-button service">Windows Service Application</button>
+        </div>
+    </div>
+</dialog>
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/viewControllers/project/details.js")
+}

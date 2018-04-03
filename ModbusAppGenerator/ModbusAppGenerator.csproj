@@ -255,6 +255,7 @@
     <Content Include="Scripts\services\projectService.js" />
     <Content Include="Scripts\viewControllers\project\create-com-project.js" />
     <Content Include="Scripts\viewControllers\project\create.js" />
+    <Content Include="Scripts\viewControllers\project\details.js" />
     <Content Include="Scripts\viewControllers\project\list.js" />
     <Content Include="Scripts\viewControllers\project\update-actions.js" />
     <Content Include="Scripts\lib\bootstrap.js" />

@@ -283,21 +283,42 @@ namespace ModbusAppGenerator.Core.Services
             _unitOfWork.Save();
         }
 
-        public byte[] DownloadProject(int projectId, string userId, string currentDirectoryRoot)
+        public byte[] DownloadProject(int projectId, ApplicationType type, string userId, string currentDirectoryRoot)
         {
             var project = Get(projectId, userId);
 
-            // TODO: Add rebuilding a project
-            
-            var consoleAppBinFolderRoute = $"{currentDirectoryRoot}\\..\\ModbusAppGenerator.ModbusApp.Console\\bin\\Release";
-            var modbusFilesRoutes = new string[]
+            var consoleAppBinFolderRoute = "";
+            var modbusFilesRoutes = new List<string>()
             {
-                "ModbusAppGenerator.ModbusApp.Console.exe",
-                "ModbusAppGenerator.ModbusApp.Console.exe.config",
                 "NModbus4.dll",
                 "ModbusAppGenerator.ModbusApp.Core.dll",
                 "Autofac.dll"
             };
+
+            switch (type)
+            {
+                case ApplicationType.Console:
+                    consoleAppBinFolderRoute = $"{currentDirectoryRoot}\\..\\ModbusAppGenerator.ModbusApp.Console\\bin\\Release";
+
+                    modbusFilesRoutes.AddRange(new string[]
+                    {
+                        "ModbusAppGenerator.ModbusApp.Console.exe",
+                        "ModbusAppGenerator.ModbusApp.Console.exe.config",
+                        
+                    });
+
+                    break;
+                case ApplicationType.Service:
+                    consoleAppBinFolderRoute = $"{currentDirectoryRoot}\\..\\ModbusAppGenerator.ModbusApp.Service\\bin\\Release";
+
+                    modbusFilesRoutes.AddRange(new string[]
+                    {
+                        "ModbusAppGenerator.ModbusApp.Service.exe",
+                        "ModbusAppGenerator.ModbusApp.Service.exe.config"
+                    });
+
+                    break;
+            }
 
             var tempFolderRoute = $"{currentDirectoryRoot}\\Temp";
             var tempAppFolderRoute = $"{tempFolderRoute}\\AppFiles";

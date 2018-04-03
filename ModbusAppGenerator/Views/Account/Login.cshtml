@@ -15,7 +15,7 @@
             @using (Html.BeginForm("Login", "Account", FormMethod.Post))
             {
                 @Html.AntiForgeryToken()
-                @*<div asp-validation-summary="All" class="text-danger"></div>*@
+                @Html.ValidationSummary("", new { @class = "text-danger" })
                 <div class="form-group">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         @Html.TextBoxFor(m => m.Email, new { @class = "mdl-textfield__input" })

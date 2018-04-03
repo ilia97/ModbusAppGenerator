@@ -7,6 +7,7 @@ using AutoMapper;
 using Microsoft.AspNet.Identity;
 using ModbusAppGenerator.Core.Models;
 using ModbusAppGenerator.Core.Services.Interfaces;
+using ModbusAppGenerator.DataAccess.Enums;
 using ModbusAppGenerator.ViewModels.ProjectViewModels;
 
 namespace ModbusAppGenerator.Controllers
@@ -266,16 +267,28 @@ namespace ModbusAppGenerator.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult Download(int id)
+        public ActionResult Download(int id, ApplicationType type)
         {
-            var zipFile = _projectService.DownloadProject(id, User.Identity.GetUserId(), Server.MapPath("~/"));
+            var zipFile = _projectService.DownloadProject(id, type, User.Identity.GetUserId(), Server.MapPath("~/"));
             var project = _projectService.Get(id, User.Identity.GetUserId());
+
+            var stringApplictionType = "";
+
+            switch (type)
+            {
+                case ApplicationType.Console:
+                    stringApplictionType = "Console Application";
+                    break;
+                case ApplicationType.Service:
+                    stringApplictionType = "Windows Service Application";
+                    break;
+            }
 
             string contentType = "application/zip";
             HttpContext.Response.ContentType = contentType;
             var result = new FileContentResult(zipFile, contentType)
             {
-                FileDownloadName = $"{project.Name}.zip"
+                FileDownloadName = $"{project.Name} ({ stringApplictionType }).zip"
             };
 
             return result;

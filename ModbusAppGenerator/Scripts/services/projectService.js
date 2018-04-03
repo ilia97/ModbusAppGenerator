@@ -23,4 +23,8 @@
     this.deleteProject = function (id) {
         window.location = window.location.origin + '/Project/Delete/' + id;
     }
+
+    this.downloadProject = function (id, type) {
+        window.location = window.location.origin + '/Project/Download/' + id + '?type=' + type;
+    }
 }

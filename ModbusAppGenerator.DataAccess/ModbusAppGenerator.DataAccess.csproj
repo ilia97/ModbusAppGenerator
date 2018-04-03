@@ -59,6 +59,7 @@
     <Compile Include="Entities\ProjectEntity.cs" />
     <Compile Include="Entities\SlaveActionEntity.cs" />
     <Compile Include="Entities\UserEntity.cs" />
+    <Compile Include="Enums\ApplicationType.cs" />
     <Compile Include="Enums\ActionTypes.cs" />
     <Compile Include="Enums\ConnectionTypes.cs" />
     <Compile Include="Enums\ModbusDataType.cs" />
