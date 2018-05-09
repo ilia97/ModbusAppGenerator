@@ -49,6 +49,7 @@
     <Compile Include="DataAccess\ModbusMasterInitializer.cs" />
     <Compile Include="DataAccess\ModbusSlavesRepository.cs" />
     <Compile Include="Misc\Converter.cs" />
+    <Compile Include="Misc\Enums\ActionTypes.cs" />
     <Compile Include="Misc\Enums\ModbusDataType.cs" />
     <Compile Include="Misc\Enums\PortType.cs" />
     <Compile Include="Misc\Exceptions\EmptyResultException.cs" />

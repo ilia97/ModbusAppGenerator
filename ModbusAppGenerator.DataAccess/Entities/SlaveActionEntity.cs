@@ -27,6 +27,10 @@ namespace ModbusAppGenerator.DataAccess.Entities
 
         public int NumberOfRegisters { set; get; }
 
+        public ActionTypes ActionType { set; get; }
+
+        public string Formula { set; get; }
+
         public virtual List<DataTypeEntity> Types { set; get; }
     }
 }

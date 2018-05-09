@@ -21,6 +21,10 @@ namespace ModbusAppGenerator.Core.Models
 
         public int NumberOfRegisters { set; get; }
 
+        public ActionTypes ActionType { set; get; }
+        
+        public string Formula { set; get; }
+
         public List<ModbusDataType> Types { set; get; }
     }
 }

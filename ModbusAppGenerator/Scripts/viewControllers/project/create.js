@@ -1,4 +1,4 @@
-﻿$.ready(function () {
+﻿$(function () {
     var projectService = new ProjectService();
 
     var submitButton = $('#submit-button');

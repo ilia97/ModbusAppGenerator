@@ -68,12 +68,21 @@ button a {
     color: black !important;
 }
 
+    .mdl-navigation__link.mdl-link {
+        color: #F76B8A !important;
+        font-size: inherit;
+    }
+
 .mdl-textfield {
     width: 100% !important;
 }
 
 .mdl-dialog.medium-width {
     width: 500px !important
+}
+
+.mdl-dialog.wide-width {
+    width: 1000px !important
 }
 
 .mdl-button {

@@ -97,3 +97,9 @@
         </div>
     }
 </div>
+
+@Html.Action("ActionForm", new { id = Model.Id })
+
+@section Scripts {
+    <script src="~/Scripts/viewControllers/project/update-actions.js"></script>
+}

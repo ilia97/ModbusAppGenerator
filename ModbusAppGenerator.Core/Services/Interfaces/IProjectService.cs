@@ -16,7 +16,11 @@ namespace ModbusAppGenerator.Core.Services.Interfaces
 
         IList<Project> GetUserProjects(string userId);
 
-        void UpdateActions(int projectId, List<SlaveAction> actions, string userId);
+        void AddAction(int projectId, SlaveAction action, string userId);
+
+        void EditAction(int projectId, SlaveAction action, string userId);
+
+        void DeleteAction(int projectId, int actionId, string userId);
 
         byte[] DownloadProject(int projectId, ApplicationType type, string userId, string currentDirectoryRoot);
 

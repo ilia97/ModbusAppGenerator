@@ -152,7 +152,7 @@ namespace ModbusAppGenerator.Controllers
             return RedirectToAction("UpdateActions", new { id = project.Id });
         }
 
-        public ActionResult UpdateActions(int id)
+        public ActionResult ActionForm(int id)
         {
             var project = _projectService.Get(id, User.Identity.GetUserId());
 
@@ -163,22 +163,43 @@ namespace ModbusAppGenerator.Controllers
                 model.Actions[i].Number = i;
             }
 
-            return View(model);
+            return PartialView(model);
+        }
+
+        public ActionResult UpdateActions(int id)
+        {
+            ViewData["ProjectId"] = id;
+
+            return View();
         }
 
         [HttpPost]
-        public ActionResult UpdateActions(AddProjectActionsViewModel model)
+        public ActionResult UpdateAction(ActionViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            var actions = Mapper.Map<List<ActionViewModel>, List<SlaveAction>>(model.Actions);
+            var action = Mapper.Map<ActionViewModel, SlaveAction>(model);
 
-            _projectService.UpdateActions(model.Id, actions, User.Identity.GetUserId());
+            if (model.Id == null || model.Id == 0)
+            {
+                _projectService.AddAction(model.ProjectId, action, User.Identity.GetUserId());
+            }
+            else
+            {
+                _projectService.EditAction(model.ProjectId, action, User.Identity.GetUserId());
+            }
 
-            return RedirectToAction("Details", new { id = model.Id });
+            return RedirectToAction("UpdateActions", new { id = model.ProjectId });
+        }
+        
+        public ActionResult DeleteAction(int id, int projectId)
+        {
+            _projectService.DeleteAction(projectId, id, User.Identity.GetUserId());
+
+            return RedirectToAction("UpdateActions", new { id = projectId });
         }
 
         public ActionResult Edit(int id)

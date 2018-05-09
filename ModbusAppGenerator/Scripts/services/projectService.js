@@ -13,11 +13,15 @@
         });
     }
 
-    this.updateActions = function (project) {
-        $.post('/Project/UpdateActions', project, function () {
+    this.updateAction = function (action) {
+        $.post('/Project/UpdateAction', action, function () {
             // if success
-            window.location = window.location.origin + '/Project/Details/' + project.Id;
+            location.reload();
         });
+    }
+
+    this.deleteAction = function (actionId, projectId) {
+        window.location = window.location.origin + '/Project/DeleteAction/' + actionId + '?projectId=' + projectId;
     }
 
     this.deleteProject = function (id) {

@@ -90,15 +90,17 @@ namespace ModbusAppGenerator.Core.Services
                 }
             }
 
-            foreach (var action in projectEntity.Actions)
+            while (projectEntity.Actions.Count > 0)
             {
+                var action = projectEntity.Actions[0];
+
                 if (action != null)
                 {
-                    foreach (var dataType in action.Types)
+                    while (action.Types.Count > 0)
                     {
-                        if (dataType != null)
+                        if (action.Types[0] != null)
                         {
-                            _unitOfWork.DataTypesRepository.Delete(dataType.Id);
+                            _unitOfWork.DataTypesRepository.Delete(action.Types[0].Id);
                         }
                     }
                 }
@@ -255,6 +257,8 @@ namespace ModbusAppGenerator.Core.Services
                     slaveActionEntity.ProjectId = projectId;
                     slaveActionEntity.SlaveAddress = action.SlaveAddress;
                     slaveActionEntity.StartAddress = action.StartAddress;
+                    slaveActionEntity.Formula = action.Formula;
+                    slaveActionEntity.ActionType = action.ActionType;
 
                     _unitOfWork.SlaveActionRepository.Update(slaveActionEntity);
 
@@ -278,6 +282,84 @@ namespace ModbusAppGenerator.Core.Services
 
                     _unitOfWork.DataTypesRepository.Insert(dataTypeEntity);
                 }
+            }
+
+            _unitOfWork.Save();
+        }
+
+        public void AddAction(int projectId, SlaveAction action, string userId)
+        {
+            var project = _unitOfWork.ProjectRepository.GetById(projectId);
+
+            if (project.UserId != userId)
+            {
+                throw new AccessDeniedException();
+            }
+
+            var slaveActionEntity = Mapper.Map<SlaveAction, SlaveActionEntity>(action);
+            slaveActionEntity.ProjectId = projectId;
+
+            _unitOfWork.SlaveActionRepository.Insert(slaveActionEntity);
+            _unitOfWork.Save();
+        }
+
+        public void EditAction(int projectId, SlaveAction action, string userId)
+        {
+            var project = _unitOfWork.ProjectRepository.GetById(projectId);
+
+            if (project.UserId != userId)
+            {
+                throw new AccessDeniedException();
+            }
+
+            var slaveActionEntity = _unitOfWork.SlaveActionRepository.GetById(action.Id);
+
+            slaveActionEntity.NumberOfRegisters = action.NumberOfRegisters;
+            slaveActionEntity.ProjectId = projectId;
+            slaveActionEntity.SlaveAddress = action.SlaveAddress;
+            slaveActionEntity.StartAddress = action.StartAddress;
+            slaveActionEntity.Formula = action.Formula;
+            slaveActionEntity.ActionType = action.ActionType;
+
+            _unitOfWork.SlaveActionRepository.Update(slaveActionEntity);
+
+            var dataTypes = _unitOfWork.DataTypesRepository.Get(x => x.SlaveActionEntityId == slaveActionEntity.Id);
+
+            foreach (var dataType in dataTypes)
+            {
+                _unitOfWork.DataTypesRepository.Delete(dataType.Id);
+            }
+
+            foreach (var dataType in action.Types)
+            {
+                var dataTypeEntity = new DataTypeEntity()
+                {
+                    SlaveActionEntityId = slaveActionEntity.Id,
+                    Type = dataType
+                };
+
+                _unitOfWork.DataTypesRepository.Insert(dataTypeEntity);
+            }
+
+            _unitOfWork.Save();
+        }
+
+        public void DeleteAction(int projectId, int actionId, string userId)
+        {
+            var project = _unitOfWork.ProjectRepository.GetById(projectId);
+
+            if (project.UserId != userId)
+            {
+                throw new AccessDeniedException();
+            }
+
+            _unitOfWork.SlaveActionRepository.Delete(actionId);
+
+            var dataTypes = _unitOfWork.DataTypesRepository.Get(x => x.SlaveActionEntityId == actionId);
+
+            foreach (var dataType in dataTypes)
+            {
+                _unitOfWork.DataTypesRepository.Delete(dataType.Id);
             }
 
             _unitOfWork.Save();
@@ -509,13 +591,13 @@ namespace ModbusAppGenerator.Core.Services
                 $"Port={port}\r\n" +
                 $"{connectionSettings}\r\n" +
                 $"Period={project.Period}\r\n" +
-                $"[Reading]//Group#=DeviceID;StartingRegister;Number of Registers;Types\r\n";
+                $"[Actions]//Group#=ActionType;DeviceID;StartingRegister;Number of Registers;Fromula (for write actions);Types\r\n";
 
             for (int i = 0; i < project.Actions.Count; i++)
             {
                 var types = string.Join(";", project.Actions[i].Types.Select(x => x.ToString()));
 
-                fileText += $"{i + 1}={project.Actions[i].SlaveAddress};{project.Actions[i].StartAddress};{project.Actions[i].NumberOfRegisters};{types}\r\n";
+                fileText += $"{i + 1}={project.Actions[i].ActionType.ToString()};{project.Actions[i].SlaveAddress};{project.Actions[i].StartAddress};{project.Actions[i].NumberOfRegisters};{project.Actions[i].Formula};{types}\r\n";
             }
 
             using (FileStream fs = File.Create(filePath))

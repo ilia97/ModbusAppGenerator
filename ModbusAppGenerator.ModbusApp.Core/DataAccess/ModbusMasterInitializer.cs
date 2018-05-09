@@ -141,6 +141,9 @@ namespace ModbusAppGenerator.ModbusApp.Core.DataAccess
                     // Все данные для группы расположены после знака "=". 
                     var slaveSettings = slaveDetails[1];
 
+                    var actionType = slaveSettings.Substring(0, slaveSettings.IndexOf(";", StringComparison.Ordinal));
+                    slaveSettings = slaveSettings.Substring(slaveSettings.IndexOf(";", StringComparison.Ordinal) + 1);
+
                     var deviceId = slaveSettings.Substring(0, slaveSettings.IndexOf(";", StringComparison.Ordinal));
                     slaveSettings = slaveSettings.Substring(slaveSettings.IndexOf(";", StringComparison.Ordinal) + 1);
 
@@ -151,6 +154,9 @@ namespace ModbusAppGenerator.ModbusApp.Core.DataAccess
 
                     // Между первой и второй точкой с запятой располагается количество регистров, заполненных данными.
                     var registersCount = slaveSettings.Substring(0, slaveSettings.IndexOf(";", StringComparison.Ordinal));
+                    slaveSettings = slaveSettings.Substring(slaveSettings.IndexOf(";", StringComparison.Ordinal) + 1);
+                    
+                    var formula = slaveSettings.Substring(0, slaveSettings.IndexOf(";", StringComparison.Ordinal));
                     slaveSettings = slaveSettings.Substring(slaveSettings.IndexOf(";", StringComparison.Ordinal) + 1);
 
                     // Остальная часть строки содержит типы данных, перечисленные черезточку с запятой.
@@ -163,6 +169,8 @@ namespace ModbusAppGenerator.ModbusApp.Core.DataAccess
                         DeviceId = Convert.ToByte(deviceId),
                         StartAddress = Convert.ToUInt16(startAddress),
                         NumberOfRegisters = Convert.ToUInt16(registersCount),
+                        ActionType = (ActionTypes)Enum.Parse(typeof(ActionTypes), actionType),
+                        Formula = formula,
                         Types = dataTypes.Select(x =>
                         {
                             switch (x.ToLower())

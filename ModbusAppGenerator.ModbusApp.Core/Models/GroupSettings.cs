@@ -13,7 +13,11 @@ namespace ModbusAppGenerator.ModbusApp.Core.Models
         public ushort StartAddress { set; get; }
         
         public ushort NumberOfRegisters { set; get; }
-        
+
+        public ActionTypes ActionType { set; get; }
+
+        public string Formula { set; get; }
+
         public List<Tuple<int, ModbusDataType>> Types { set; get; }
     }
 }

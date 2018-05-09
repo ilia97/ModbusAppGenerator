@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ModbusAppGenerator.DataAccess.Enums;
 
 namespace ModbusAppGenerator.ViewModels.ProjectViewModels
 {
     public class ActionViewModel
     {
-        public int Id { set; get; }
+        public int? Id { set; get; }
 
-        public int Number { set; get; }
+        public int? Number { set; get; }
 
         [Required]
         [Display(Name = "Slave Address")]
@@ -23,5 +24,14 @@ namespace ModbusAppGenerator.ViewModels.ProjectViewModels
         [Required]
         [Display(Name = "Types")]
         public string Types { set; get; }
+
+        [Required]
+        [Display(Name = "Action Type")]
+        public ActionTypes ActionType { set; get; }
+        
+        [Display(Name = "Formula")]
+        public string Formula { set; get; }
+
+        public int ProjectId { set; get; }
     }
 }
