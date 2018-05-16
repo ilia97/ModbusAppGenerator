@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using ModbusAppGenerator.DataAccess.Enums;
+using System.IO.Ports;
 
 namespace ModbusAppGenerator.ViewModels.ProjectViewModels
 {
-    public class CreateProjectViewModel
+    public abstract class EditProjectViewModel
     {
+        public int Id { set; get; }
+
         [Required]
         [Display(Name = "Name")]
         public string Name { set; get; }
@@ -13,10 +15,6 @@ namespace ModbusAppGenerator.ViewModels.ProjectViewModels
         [Display(Name = "Description")]
         public string Description { set; get; }
 
-        [Required]
-        [Display(Name = "Connection Type")]
-        public ConnectionTypes? ConnectionType { set; get; }
-        
         [Display(Name = "Enable Logging")]
         public bool IsLoggerEnabled { set; get; }
 

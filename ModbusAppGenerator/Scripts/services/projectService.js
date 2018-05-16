@@ -31,4 +31,16 @@
     this.downloadProject = function (id, type) {
         window.location = window.location.origin + '/Project/Download/' + id + '?type=' + type;
     }
+
+    this.runOnline = function (id, cyclesCount, callback) {
+        $.post(
+            '/Project/Test',
+            {
+                id: id,
+                cyclesCount: cyclesCount
+            },
+            function (data) {
+                callback(data.Logs, data.Results);
+            });
+    }
 }

@@ -77,6 +77,9 @@ namespace ModbusAppGenerator
                 cfg.CreateMap<Project, AddProjectActionsViewModel>();
                 cfg.CreateMap<AddProjectActionsViewModel, Project>();
 
+                cfg.CreateMap<Project, EditActionsViewModel>();
+                cfg.CreateMap<EditActionsViewModel, Project>();
+
                 cfg.CreateMap<ActionViewModel, SlaveAction>()
                 .ForMember("Types", opt => opt.MapFrom(action =>
                 action.Types.Split(new char[] { ';' }, System.StringSplitOptions.RemoveEmptyEntries).ToList()));
@@ -86,6 +89,9 @@ namespace ModbusAppGenerator
 
                 cfg.CreateMap<Project, DetailsViewModel>();
                 cfg.CreateMap<DetailsViewModel, Project>();
+
+                cfg.CreateMap<Project, ProjectListItemViewModel>();
+                cfg.CreateMap<ProjectListItemViewModel, Project>();
             });
         }
     }

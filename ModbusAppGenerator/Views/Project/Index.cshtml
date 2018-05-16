@@ -27,7 +27,22 @@
                     </a>
                 </div>
                 <div class="mdl-card__supporting-text">
-                    @item.Description
+                    @if (item.ConnectionType == ModbusAppGenerator.DataAccess.Enums.ConnectionTypes.Ip)
+                    {
+                        <p>Type: <b>IP</b></p>
+                        <p>Host: <b>@item.Host</b></p>
+                        <p>Port: <b>@item.Port</b></p>
+                    }
+                    else if (item.ConnectionType == ModbusAppGenerator.DataAccess.Enums.ConnectionTypes.Com)
+                    {
+                        <p>Type: <b>COM</b></p>
+                        <p>BaudRate: <b>@item.BaudRate</b></p>
+                        <p>DataBits: <b>@item.DataBits</b></p>
+                        <p>Parity: <b>@item.Parity</b></p>
+                        <p>PortName: <b>@item.PortName</b></p>
+                        <p>StopBits: <b>@item.StopBitsString</b></p>
+                    }
+                    <p>@item.ShortDescription</p>
                 </div>
                 <div class="mdl-card__menu">
                     <a href='@Url.Action("Edit", new { id = item.Id })' class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">

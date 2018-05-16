@@ -114,6 +114,7 @@ namespace ModbusAppGenerator.ModbusApp.ConsoleApp
                     {
                         // Если интервал запуска равен нулю, то запускаем опрос ведомых устройств один раз.
                         modbusService.GetAndSaveDataFromSlaves(masterSettings);
+                        Console.ReadLine();
                     }
                 }
                 catch (Exception ex)

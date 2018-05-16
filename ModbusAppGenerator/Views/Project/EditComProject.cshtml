@@ -4,7 +4,12 @@
     ViewData["Title"] = "Edit Com Project";
 }
 
-<h2>Edit Com Project Settings</h2>
+<h2 class="text-center">Edit Com Project Settings</h2>
+
+<h5 class="text-center">Here you can edit main settings of your project. After finishing your work you can go to @Html.ActionLink("details", "Details", new { id = Model.Id }, new { @class = "mdl-navigation__link mdl-link" }) page.</h5>
+
+<h5 class="text-center">You can also update actions of the project @Html.ActionLink("here", "EditActions", new { id = Model.Id }, new { @class = "mdl-navigation__link mdl-link" }).</h5>
+
 
 <div>
     @using (Html.BeginForm("EditComProject", "Project"))
@@ -14,82 +19,90 @@
         @Html.HiddenFor(m => m.Id)
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.TextBoxFor(m => m.Name, new { @class = "mdl-textfield__input", autocomplete = "off" })
+                @Html.TextBoxFor(m => m.Name, new { @class = "mdl-textfield__input required", autocomplete = "off" })
                 @Html.LabelFor(m => m.Name, new { @class = "mdl-textfield__label" })
-            </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "mdl-textfield__error" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.TextBoxFor(m => m.PortName, new { @class = "mdl-textfield__input", autocomplete = "off" })
+                @Html.TextBoxFor(m => m.PortName, new { @class = "mdl-textfield__input required", autocomplete = "off" })
                 @Html.LabelFor(m => m.PortName, new { @class = "mdl-textfield__label" })
-            </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.PortName, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.PortName, "", new { @class = "mdl-textfield__error" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.TextBoxFor(m => m.BaudRate, new { @class = "mdl-textfield__input", autocomplete = "off" })
+                @Html.TextBoxFor(m => m.BaudRate, new { @class = "mdl-textfield__input required", autocomplete = "off", pattern = @"-?[0-9]*(\.[0-9]+)?" })
                 @Html.LabelFor(m => m.BaudRate, new { @class = "mdl-textfield__label" })
-            </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.BaudRate, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.BaudRate, "", new { @class = "mdl-textfield__error" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.TextBoxFor(m => m.DataBits, new { @class = "mdl-textfield__input", autocomplete = "off" })
+                @Html.TextBoxFor(m => m.DataBits, new { @class = "mdl-textfield__input required", autocomplete = "off", pattern = @"-?[0-9]*(\.[0-9]+)?" })
                 @Html.LabelFor(m => m.DataBits, new { @class = "mdl-textfield__label" })
-            </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.DataBits, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.DataBits, "", new { @class = "mdl-textfield__error" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
-                @Html.TextBoxFor(m => m.Parity, new { @class = "mdl-textfield__input", autocomplete = "off", @readonly = "readonly", type = "text", value = "" })
+                <input class="mdl-textfield__input required" value="@((int)(Model.Parity.Value))" id="Parity" autocomplete="off" readonly />
                 <input type="hidden" for="Parity" name="Parity" value="@((int)(Model.Parity.Value))">
                 <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
                 @Html.LabelFor(m => m.Parity, new { @class = "mdl-textfield__label" })
                 <ul for="Parity" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-                    <li class="mdl-menu__item" data-val="0">None</li>
-                    <li class="mdl-menu__item" data-val="1">Odd</li>
-                    <li class="mdl-menu__item" data-val="2">Even</li>
-                    <li class="mdl-menu__item" data-val="3">Mark</li>
-                    <li class="mdl-menu__item" data-val="4">Space</li>
+                    <li class="mdl-menu__item" data-val="0" @((int)(Model.Parity.Value) == 0 ? " data-selected='true'" : "")>None</li>
+                    <li class="mdl-menu__item" data-val="1" @((int)(Model.Parity.Value) == 1 ? " data-selected='true'" : "")>Odd</li>
+                    <li class="mdl-menu__item" data-val="2" @((int)(Model.Parity.Value) == 2 ? " data-selected='true'" : "")>Even</li>
+                    <li class="mdl-menu__item" data-val="3" @((int)(Model.Parity.Value) == 3 ? " data-selected='true'" : "")>Mark</li>
+                    <li class="mdl-menu__item" data-val="4" @((int)(Model.Parity.Value) == 4 ? " data-selected='true'" : "")>Space</li>
                 </ul>
-            </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.Parity, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.Parity, "", new { @class = "mdl-textfield__error" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
-                @Html.TextBoxFor(m => m.StopBits, new { @class = "mdl-textfield__input", autocomplete = "off", @readonly = "readonly", type = "text", value = "" })
+                <input class="mdl-textfield__input required" value="@Model.StringStopBits" id="StopBits" autocomplete="off" readonly />
                 <input type="hidden" for="StopBits" name="StopBits" value="@((int)(Model.StopBits.Value))">
                 <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
                 @Html.LabelFor(m => m.StopBits, new { @class = "mdl-textfield__label" })
                 <ul for="StopBits" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-                    <li class="mdl-menu__item" data-val="0">0</li>
-                    <li class="mdl-menu__item" data-val="1">1</li>
-                    <li class="mdl-menu__item" data-val="3">1.5</li>
-                    <li class="mdl-menu__item" data-val="2">2</li>
+                    <li class="mdl-menu__item" data-val="0" @((int)(Model.StopBits.Value) == 0 ? " data-selected='true'" : "")>0</li>
+                    <li class="mdl-menu__item" data-val="1" @((int)(Model.StopBits.Value) == 1 ? " data-selected='true'" : "")>1</li>
+                    <li class="mdl-menu__item" data-val="3" @((int)(Model.StopBits.Value) == 3 ? " data-selected='true'" : "")>1.5</li>
+                    <li class="mdl-menu__item" data-val="2" @((int)(Model.StopBits.Value) == 2 ? " data-selected='true'" : "")>2</li>
                 </ul>
-            </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.StopBits, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.StopBits, "", new { @class = "mdl-textfield__error" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.TextAreaFor(m => m.Description, new { @class = "mdl-textfield__input", type = "text", rows = "3" })
+                @Html.TextAreaFor(m => m.Description, new { @class = "mdl-textfield__input required", type = "text", rows = "3" })
                 @Html.LabelFor(m => m.Description, new { @class = "mdl-textfield__label" })
+                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "mdl-textfield__error" })
             </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                @Html.TextBoxFor(m => m.Period, new { @class = "mdl-textfield__input required", autocomplete = "off", pattern = @"-?[0-9]*(\.[0-9]+)?" })
+                @Html.LabelFor(m => m.Period, new { @class = "mdl-textfield__label" })
+                @Html.ValidationMessageFor(m => m.Period, "", new { @class = "mdl-textfield__error" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                @Html.TextBoxFor(m => m.Timeout, new { @class = "mdl-textfield__input required", autocomplete = "off", pattern = @"-?[0-9]*(\.[0-9]+)?" })
+                @Html.LabelFor(m => m.Timeout, new { @class = "mdl-textfield__label" })
+                @Html.ValidationMessageFor(m => m.Timeout, "", new { @class = "mdl-textfield__error" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="checkbox" style="padding-left: 0px">
+                <label for="IsLoggerEnabled" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" style="padding-top: 4px">
+                    <input for="IsLoggerEnabled" type="checkbox" name="IsLoggerEnabled" id="IsLoggerEnabled" class="mdl-checkbox__input" value="true" @(Model.IsLoggerEnabled ? " checked" : "")>
+                    <span class="mdl-checkbox__label">@Html.DisplayNameFor(m => m.IsLoggerEnabled)</span>
+                </label>
             </div>
         </div>
         <div class="form-group">
@@ -97,9 +110,3 @@
         </div>
     }
 </div>
-
-@Html.Action("ActionForm", new { id = Model.Id })
-
-@section Scripts {
-    <script src="~/Scripts/viewControllers/project/update-actions.js"></script>
-}

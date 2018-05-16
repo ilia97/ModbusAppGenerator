@@ -24,6 +24,6 @@ namespace ModbusAppGenerator.Core.Services.Interfaces
 
         byte[] DownloadProject(int projectId, ApplicationType type, string userId, string currentDirectoryRoot);
 
-        Dictionary<int, string> TestProject(int projectId, string userId);
+        OperationResult TestProject(int projectId, int cyclesCount, string userId);
     }
 }

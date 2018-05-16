@@ -54,6 +54,10 @@
     });
 
     submitButton.click(function () {
+        if (!$(this).parents('form')[0].checkValidity()) {
+            return;
+        }
+
         var action = collectActionModel();
 
         projectService.updateAction(action);

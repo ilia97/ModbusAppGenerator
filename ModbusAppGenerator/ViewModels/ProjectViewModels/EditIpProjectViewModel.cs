@@ -2,16 +2,8 @@
 
 namespace ModbusAppGenerator.ViewModels.ProjectViewModels
 {
-    public class EditIpProjectViewModel
+    public class EditIpProjectViewModel: EditProjectViewModel
     {
-        public int Id { set; get; }
-
-        [Required]
-        public string Name { set; get; }
-
-        [Required]
-        public string Description { set; get; }
-
         [Required]
         [RegularExpression(@"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b", ErrorMessage = "Wrong host format.")]
         public string Host { set; get; }

@@ -18,6 +18,7 @@ namespace ModbusAppGenerator.ViewModels.ProjectViewModels
 
         [Required]
         [Display(Name = "Data Bits")]
+        [Range(5, 8)]
         public int? DataBits { set; get; }
 
         [Required]

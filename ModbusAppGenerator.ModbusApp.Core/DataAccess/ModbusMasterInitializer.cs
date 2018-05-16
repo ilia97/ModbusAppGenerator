@@ -155,9 +155,13 @@ namespace ModbusAppGenerator.ModbusApp.Core.DataAccess
                     // Между первой и второй точкой с запятой располагается количество регистров, заполненных данными.
                     var registersCount = slaveSettings.Substring(0, slaveSettings.IndexOf(";", StringComparison.Ordinal));
                     slaveSettings = slaveSettings.Substring(slaveSettings.IndexOf(";", StringComparison.Ordinal) + 1);
-                    
-                    var formula = slaveSettings.Substring(0, slaveSettings.IndexOf(";", StringComparison.Ordinal));
-                    slaveSettings = slaveSettings.Substring(slaveSettings.IndexOf(";", StringComparison.Ordinal) + 1);
+
+                    string formula = "";
+                    if (actionType == "Write")
+                    {
+                        formula = slaveSettings.Substring(0, slaveSettings.IndexOf(";", StringComparison.Ordinal));
+                        slaveSettings = slaveSettings.Substring(slaveSettings.IndexOf(";", StringComparison.Ordinal) + 1);
+                    }
 
                     // Остальная часть строки содержит типы данных, перечисленные черезточку с запятой.
                     var dataTypes = slaveSettings.Split(';');
@@ -214,7 +218,7 @@ namespace ModbusAppGenerator.ModbusApp.Core.DataAccess
                 }
                 catch (Exception)
                 {
-                    throw new InvalidSettingsException($"Exception occured when getting application settings from \"{initFileName}\".\r\nGroup declaration has an incorrect format (line {i + 1}).\r\n The correct declaration is: [Group number]=[StartingRegister];[Number of Registers];[Types splitted with \";\"] Example of group declaration:\r\n2=2050;4;Uint32;Uint32");
+                    throw new InvalidSettingsException($"Exception occured when getting application settings from \"{initFileName}\".\r\nGroup declaration has an incorrect format (line {i + 1}).\r\n The correct declaration is: [Group number]=[ActionType];[StartingRegister];[Number of Registers];[Fromula for write actions];[Types splitted with \";\"] Example of group declaration:\r\n2=Read;2050;4;Uint32;Uint32");
                 }
             }
 

@@ -19,10 +19,12 @@ namespace ModbusAppGenerator.ModbusApp.Core.Services
         private readonly IModbusSlavesRepository _modbusSlavesRepository;
 
         private static bool isConnectionLost;
+        private bool loggerEnabled;
 
-        public ModbusService(IModbusSlavesRepository modbusSlavesRepository)
+        public ModbusService(IModbusSlavesRepository modbusSlavesRepository, bool loggerEnabled = true)
         {
             _modbusSlavesRepository = modbusSlavesRepository;
+            this.loggerEnabled = loggerEnabled;
         }
         
         public Dictionary<int, string> GetDataFromSlaves(MasterSettings masterSettings)
@@ -73,7 +75,14 @@ namespace ModbusAppGenerator.ModbusApp.Core.Services
             {
                 if (!isConnectionLost)
                 {
-                    Logger.Write(ex.Message);
+                    if (loggerEnabled)
+                    {
+                        Logger.Write(ex.Message);
+                    }
+                    else
+                    {
+                        throw ex;
+                    }
                 }
                 isConnectionLost = true;
             }
@@ -91,7 +100,7 @@ namespace ModbusAppGenerator.ModbusApp.Core.Services
             SaveResults(this.GetDataFromSlaves(masterSettings));
         }
 
-        private static Dictionary<int, string> SendRequests(ModbusMaster master, MasterSettings masterSettings)
+        private Dictionary<int, string> SendRequests(ModbusMaster master, MasterSettings masterSettings)
         {
             if (master == null) return null;
 
@@ -316,13 +325,27 @@ namespace ModbusAppGenerator.ModbusApp.Core.Services
                             isConnectionLost = true;
                             break;
                         default:
-                            Logger.Write(slaveException.Message);
+                            if (loggerEnabled)
+                            {
+                                Logger.Write(slaveException.Message);
+                            }
+                            else
+                            {
+                                throw slaveException;
+                            }
                             break;
                     }
                 }
                 catch (Exception exception)
                 {
-                    Logger.Write(exception.Message);
+                    if (loggerEnabled)
+                    {
+                        Logger.Write(exception.Message);
+                    }
+                    else
+                    {
+                        throw exception;
+                    }
                 }
             }
 

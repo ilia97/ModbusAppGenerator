@@ -3,18 +3,8 @@ using System.IO.Ports;
 
 namespace ModbusAppGenerator.ViewModels.ProjectViewModels
 {
-    public class EditComProjectViewModel
+    public class EditComProjectViewModel: EditProjectViewModel
     {
-        public int Id { set; get; }
-
-        [Required]
-        [Display(Name = "Name")]
-        public string Name { set; get; }
-
-        [Required]
-        [Display(Name = "Description")]
-        public string Description { set; get; }
-
         [Required]
         [Display(Name = "Port Name")]
         public string PortName { set; get; }
@@ -25,6 +15,7 @@ namespace ModbusAppGenerator.ViewModels.ProjectViewModels
 
         [Required]
         [Display(Name = "Data Bits")]
+        [Range(5, 8)]
         public int? DataBits { set; get; }
 
         [Required]
@@ -34,5 +25,25 @@ namespace ModbusAppGenerator.ViewModels.ProjectViewModels
         [Required]
         [Display(Name = "Stop Bits")]
         public StopBits? StopBits { set; get; }
+
+        public string StringStopBits
+        {
+            get
+            {
+                switch (StopBits)
+                {
+                    case System.IO.Ports.StopBits.None:
+                        return "0";
+                    case System.IO.Ports.StopBits.One:
+                        return "1";
+                    case System.IO.Ports.StopBits.OnePointFive:
+                        return "1.5";
+                    case System.IO.Ports.StopBits.Two:
+                        return "2";
+                    default:
+                        return "";
+                }
+            }
+        }
     }
 }

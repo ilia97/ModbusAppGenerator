@@ -6,6 +6,7 @@
 
 <h2 class="text-center">@Model.Name</h2>
 <h4 class="text-center">@Model.Description</h4>
+
 @switch (Model.ConnectionType)
 {
     case ModbusAppGenerator.DataAccess.Enums.ConnectionTypes.Com:
@@ -13,30 +14,36 @@
         break;
 }
 
-<div>
-    <div class="mdl-grid">
-        <div class="mdl-cell mdl-cell--4-col">
-            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "mdl-button mdl-js-button mdl-button--raised mdl-button--accent primary-button" })
-        </div>
-        <div class="mdl-cell mdl-cell--4-col">
-            <a id="download-button" href="#" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent primary-button">Download</a>
-        </div>
-        <div class="mdl-cell mdl-cell--4-col">
-            @Html.ActionLink("Test", "Test", new { id = Model.Id }, new { @class = "mdl-button mdl-js-button mdl-button--raised mdl-button--accent primary-button" })
-        </div>
-    </div>
-    <div class="mdl-grid">
-        @foreach (var action in Model.Actions)
+        <div>
+            <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--4-col">
+                    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "mdl-button mdl-js-button mdl-button--raised mdl-button--accent primary-button" })
+                </div>
+                <div class="mdl-cell mdl-cell--4-col">
+                    <a id="download-button" href="#" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent primary-button">Download</a>
+                </div>
+                @if (Model.ConnectionType == ModbusAppGenerator.DataAccess.Enums.ConnectionTypes.Ip)
         {
-            <div class="mdl-cell mdl-cell--4-col action">
-                Slave Device Number: @action.SlaveAddress <br />
-                Start Address: @action.StartAddress <br />
-                Number Of Registers: @action.NumberOfRegisters <br />
-                Types: @action.Types <br />
+            <div class="mdl-cell mdl-cell--4-col">
+                <a id="run-online-button" href="#" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent primary-button">Run online</a>
             </div>
+}
+            </div>
+            <div class="mdl-grid">
+                <h3>Actions list:</h3>
+                @foreach (var action in Model.Actions)
+        {
+            if (action.ActionType == ModbusAppGenerator.DataAccess.Enums.ActionTypes.Read)
+            {
+                <h4>Read @action.NumberOfRegisters @(action.NumberOfRegisters == 1 ? "register" : "registers") from slave number @action.SlaveAddress starting from register number @action.StartAddress. Convert data to @(string.Join(", ", action.Types.Split(';'))).</h4>
+            }
+            else if (action.ActionType == ModbusAppGenerator.DataAccess.Enums.ActionTypes.Read)
+            {
+                <h4>Write @action.Formula to slave number @action.SlaveAddress to register number @action.StartAddress.</h4>
+            }
         }
-    </div>
-</div>
+            </div>
+        </div>
 
 <dialog class="mdl-dialog medium-width text-center">
     <input id="dialog-download-project-id" type="hidden" value="@Model.Id" />
@@ -53,6 +60,35 @@
         <div class="mdl-cell mdl-cell--6-col">
             <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent primary-button service">Windows Service Application</button>
         </div>
+    </div>
+</dialog>
+
+<dialog class="mdl-dialog wide-width online-dialog">
+    <h4 class="mdl-dialog__title">Run online</h4>
+    <div class="mdl-dialog__content">
+        <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--6-col">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input name="CyclesCount" class="mdl-textfield__input required cycles-count-input" id="CyclesCount" autocomplete="off" pattern="-?[0-9]*(\.[0-9]+)?" value="1">
+                    <label for="CyclesCount" class="mdl-textfield__label floated-label">Cycles Count</label>
+                </div>
+            </div>
+            <div class="mdl-cell mdl-cell--6-col">
+                <button type="button" class="mdl-button mdl-js-button mdl-button--raised primary-button run-online">Run</button>
+            </div>
+        </div>
+        <div class="loader hidden"></div>
+        Logs:
+        <div class="logs">
+
+        </div>
+        Results:
+        <div class="results">
+
+        </div>
+    </div>
+    <div class="mdl-dialog__actions">
+        <button type="button" class="mdl-button close">Cancel</button>
     </div>
 </dialog>
 

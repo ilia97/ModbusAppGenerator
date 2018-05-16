@@ -7,7 +7,7 @@
 <h2 class="text-center">Create a New Project. Step 2</h2>
 
 <h5 class="text-center">Great! You have completed the main settings of your project! Please complete COM configurations of your project.</h5>
-<div>
+<div id="create-com-project-block">
     @using (Html.BeginForm("CreateComProject", "Project"))
     {
         @Html.AntiForgeryToken()
@@ -15,72 +15,58 @@
         @Html.HiddenFor(m => m.Id)
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.TextBoxFor(m => m.PortName, new { @class = "mdl-textfield__input", autocomplete = "off" })
+                @Html.TextBoxFor(m => m.PortName, new { @class = "mdl-textfield__input required", autocomplete = "off" })
                 @Html.LabelFor(m => m.PortName, new { @class = "mdl-textfield__label" })
-            </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.PortName, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.PortName, "", new { @class = "mdl-textfield__error" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.TextBoxFor(m => m.BaudRate, new { @class = "mdl-textfield__input", autocomplete = "off" })
+                @Html.TextBoxFor(m => m.BaudRate, new { @class = "mdl-textfield__input required", autocomplete = "off", pattern = @"-?[0-9]*(\.[0-9]+)?" })
                 @Html.LabelFor(m => m.BaudRate, new { @class = "mdl-textfield__label" })
-            </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.BaudRate, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.BaudRate, "", new { @class = "mdl-textfield__error" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.TextBoxFor(m => m.DataBits, new { @class = "mdl-textfield__input", autocomplete = "off" })
+                @Html.TextBoxFor(m => m.DataBits, new { @class = "mdl-textfield__input required", autocomplete = "off", pattern = @"-?[0-9]*(\.[0-9]+)?", min = "5", max = "8" })
                 @Html.LabelFor(m => m.DataBits, new { @class = "mdl-textfield__label" })
-            </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.DataBits, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.DataBits, "", new { @class = "mdl-textfield__error" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
-                @Html.TextBoxFor(m => m.Parity, new { @class = "mdl-textfield__input", autocomplete = "off", @readonly = "readonly", type = "text", value = "" })
+                <input class="mdl-textfield__input required" value="" id="Parity" autocomplete="off" readonly />
                 <input type="hidden" name="Parity">
                 <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
                 @Html.LabelFor(m => m.Parity, new { @class = "mdl-textfield__label" })
                 <ul for="Parity" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-                    <li class="mdl-menu__item" data-val="0">None</li>
-                    <li class="mdl-menu__item" data-val="1">Odd</li>
-                    <li class="mdl-menu__item" data-val="2">Even</li>
-                    <li class="mdl-menu__item" data-val="3">Mark</li>
-                    <li class="mdl-menu__item" data-val="4">Space</li>
+                    <li class="mdl-menu__item" data-val="0"@(Model != null && (int)(Model.Parity.Value) == 0 ? " data-selected='true'" : "")>None</li>
+                    <li class="mdl-menu__item" data-val="1"@(Model != null && (int)(Model.Parity.Value) == 1 ? " data-selected='true'" : "")>Odd</li>
+                    <li class="mdl-menu__item" data-val="2"@(Model != null && (int)(Model.Parity.Value) == 2 ? " data-selected='true'" : "")>Even</li>
+                    <li class="mdl-menu__item" data-val="3"@(Model != null && (int)(Model.Parity.Value) == 3 ? " data-selected='true'" : "")>Mark</li>
+                    <li class="mdl-menu__item" data-val="4"@(Model != null && (int)(Model.Parity.Value) == 4 ? " data-selected='true'" : "")>Space</li>
                 </ul>
-            </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.Parity, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.Parity, "", new { @class = "mdl-textfield__error" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
-                @Html.TextBoxFor(m => m.StopBits, new { @class = "mdl-textfield__input", autocomplete = "off", @readonly = "readonly", type = "text", value = "" })
+                <input class="mdl-textfield__input required" value="" id="StopBits" autocomplete="off" readonly />
                 <input type="hidden" name="StopBits">
                 <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
                 @Html.LabelFor(m => m.StopBits, new { @class = "mdl-textfield__label" })
                 <ul for="StopBits" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-                    <li class="mdl-menu__item" data-val="0">0</li>
-                    <li class="mdl-menu__item" data-val="1">1</li>
-                    <li class="mdl-menu__item" data-val="3">1.5</li>
-                    <li class="mdl-menu__item" data-val="2">2</li>
+                    <li class="mdl-menu__item" data-val="0"@(Model != null && (int)(Model.StopBits.Value) == 0 ? " data-selected='true'" : "")>0</li>
+                    <li class="mdl-menu__item" data-val="1"@(Model != null && (int)(Model.StopBits.Value) == 1 ? " data-selected='true'" : "")>1</li>
+                    <li class="mdl-menu__item" data-val="3"@(Model != null && (int)(Model.StopBits.Value) == 3 ? " data-selected='true'" : "")>1.5</li>
+                    <li class="mdl-menu__item" data-val="2"@(Model != null && (int)(Model.StopBits.Value) == 2 ? " data-selected='true'" : "")>2</li>
                 </ul>
-            </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.StopBits, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.StopBits, "", new { @class = "mdl-textfield__error" })
             </div>
         </div>
         <div class="form-group">
-            <button id="create-project-btn" class="mdl-button mdl-js-button mdl-button--raised primary-button">Save</button>
+            <button type="submit" class="mdl-button mdl-js-button mdl-button--raised primary-button">Save</button>
         </div>
     }
 </div>
-
-@*@section Scripts {
-    @Scripts.Render("~/Scripts/viewControllers/project/create-com-project.js")
-}*@

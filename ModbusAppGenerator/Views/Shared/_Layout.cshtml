@@ -22,7 +22,7 @@
                     <a class="mdl-navigation__link" href="@Url.Action("Index", "Project")">My Projects</a>
                     <a class="mdl-navigation__link" href="@Url.Action("About", "Home")">About Us</a>
                     <a class="mdl-navigation__link" href="@Url.Action("Index", "Manage")">My Profile</a>
-                    <a class="mdl-navigation__link" href="@Url.Action("Logout", "Account")">Logout</a>
+                    <a class="mdl-navigation__link" href="@Url.Action("LogOff", "Account")">Logout</a>
                 </nav>
             </div>
         </header>
@@ -40,6 +40,8 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/material")
+    @Scripts.Render("~/bundles/overrides")
+    @Scripts.Render("~/bundles/common")
     @Scripts.Render("~/bundles/services")
     @RenderSection("scripts", required: false)
 </body>

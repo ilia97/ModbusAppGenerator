@@ -23,6 +23,12 @@ namespace ModbusAppGenerator
                       "~/Scripts/lib/material.js",
                       "~/Scripts/lib/getmdl-select.min.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/overrides").Include(
+                      "~/Scripts/overrides/required-attribute.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/common").Include(
+                      "~/Scripts/common.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/services").Include(
                       "~/Scripts/services/projectService.js"));
 

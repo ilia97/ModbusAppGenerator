@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.IO.Compression;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using AutoMapper;
 using ModbusAppGenerator.Core.Exceptions;
 using ModbusAppGenerator.Core.Models;
@@ -30,6 +32,8 @@ namespace ModbusAppGenerator.Core.Services
         public int Add(Project project, string userId)
         {
             var projectEntity = Mapper.Map<Project, ProjectEntity>(project);
+
+            projectEntity.StatFlushPeriod = Convert.ToInt32(ConfigurationManager.AppSettings["StatFlushPeriod"]);
 
             foreach (var device in project.Actions)
             {
@@ -166,6 +170,8 @@ namespace ModbusAppGenerator.Core.Services
                 {
                     comConnectionSettings = _unitOfWork.ComConnectionSettingsRepository.GetById(project.ConnectionSettings.Id);
 
+                    Mapper.Map((ComConnectionSettings)project.ConnectionSettings, comConnectionSettings);
+
                     _unitOfWork.ComConnectionSettingsRepository.Update(comConnectionSettings);
                 }
 
@@ -192,21 +198,7 @@ namespace ModbusAppGenerator.Core.Services
 
             var project = Mapper.Map<ProjectEntity, Project>(projectEntity);
 
-            switch (projectEntity.ConnectionType)
-            {
-                case ConnectionTypes.Ip:
-                    var ipConnectionSettings = _unitOfWork.IpConnectionSettingsRepository.GetById(projectEntity.SettingId) ?? new IpConnectionSettingsEntity();
-
-                    project.ConnectionSettings = Mapper.Map<IpConnectionSettingsEntity, IpConnectionSettings>(ipConnectionSettings);
-
-                    break;
-                case ConnectionTypes.Com:
-                    var comConnectionSettings = _unitOfWork.ComConnectionSettingsRepository.GetById(projectEntity.SettingId) ?? new ComConnectionSettingsEntity();
-
-                    project.ConnectionSettings = Mapper.Map<ComConnectionSettingsEntity, ComConnectionSettings>(comConnectionSettings);
-
-                    break;
-            }
+            project.ConnectionSettings = GetConnectionSettings(projectId);
 
             var projectSlaveActionEntities = (List<SlaveActionEntity>)_unitOfWork.SlaveActionRepository.Get(x => x.ProjectId == project.Id);
             project.Actions = Mapper.Map<List<SlaveActionEntity>, List<SlaveAction>>(projectSlaveActionEntities);
@@ -222,11 +214,37 @@ namespace ModbusAppGenerator.Core.Services
             return project;
         }
 
+        private ConnectionSettings GetConnectionSettings(int projectId)
+        {
+            var projectEntity = _unitOfWork.ProjectRepository.GetById(projectId);
+
+            switch (projectEntity.ConnectionType)
+            {
+                case ConnectionTypes.Ip:
+                    var ipConnectionSettings = _unitOfWork.IpConnectionSettingsRepository.GetById(projectEntity.SettingId) ?? new IpConnectionSettingsEntity();
+
+                    return Mapper.Map<IpConnectionSettingsEntity, IpConnectionSettings>(ipConnectionSettings);
+                case ConnectionTypes.Com:
+                    var comConnectionSettings = _unitOfWork.ComConnectionSettingsRepository.GetById(projectEntity.SettingId) ?? new ComConnectionSettingsEntity();
+
+                    return Mapper.Map<ComConnectionSettingsEntity, ComConnectionSettings>(comConnectionSettings);
+            }
+
+            return null;
+        }
+
         public IList<Project> GetUserProjects(string userId)
         {
-            var projectsList = _unitOfWork.ProjectRepository.Get(x => x.UserId == userId);
+            var projectEntitiesList = _unitOfWork.ProjectRepository.Get(x => x.UserId == userId);
 
-            return Mapper.Map<IList<ProjectEntity>, IList<Project>>(projectsList);
+            var projects = Mapper.Map<IList<ProjectEntity>, IList<Project>>(projectEntitiesList);
+
+            foreach (var project in projects)
+            {
+                project.ConnectionSettings = GetConnectionSettings(project.Id);
+            }
+
+            return projects;
         }
 
         public void UpdateActions(int projectId, List<SlaveAction> actions, string userId)
@@ -437,11 +455,11 @@ namespace ModbusAppGenerator.Core.Services
             return bytes;
         }
 
-        public Dictionary<int, string> TestProject(int projectId, string userId)
+        public OperationResult TestProject(int projectId, int cyclesCount, string userId)
         {
             var project = this.Get(projectId, userId);
 
-            var modbusService = new ModbusService(new ModbusSlavesRepository());
+            var modbusService = new ModbusService(new ModbusSlavesRepository(), false);
 
             var slaveSettings = new List<ModbusApp.Core.Models.GroupSettings>();
 
@@ -478,41 +496,67 @@ namespace ModbusAppGenerator.Core.Services
                 });
             }
 
-            if (project.ConnectionSettings is IpConnectionSettings)
+            var operationResult = new OperationResult();
+
+            var timerLock = new object();
+            int cyclesPassedCount = 0;
+
+            var timer = new System.Timers.Timer(project.Period * 1000);
+
+            if (project.Period > 0)
             {
-                var connectionSettings = project.ConnectionSettings as IpConnectionSettings;
-
-                return modbusService.GetDataFromSlaves(new ModbusApp.Core.Models.MasterSettingsIp()
+                timer.Elapsed += (sender, e) =>
                 {
-                    Host = connectionSettings.Host,
-                    IsLoggerEnabled = project.IsLoggerEnabled,
-                    Period = project.Period,
-                    Port = connectionSettings.Port,
-                    SlaveSettings = slaveSettings,
-                    StatFlushPeriod = project.StatFlushPeriod,
-                    Timeout = project.Timeout
-                });
+                    cyclesPassedCount += 1;
+
+                    if (cyclesPassedCount >= cyclesCount)
+                    {
+                        timer.Stop();
+                    }
+
+                    Monitor.Enter(timerLock);
+
+                    if (project.ConnectionSettings is IpConnectionSettings)
+                    {
+                        var connectionSettings = project.ConnectionSettings as IpConnectionSettings;
+
+                        try
+                        {
+                            operationResult.Logs.Add($"Attempting to get data from {connectionSettings.Host}:{connectionSettings.Port}");
+
+                            var results = modbusService.GetDataFromSlaves(new ModbusApp.Core.Models.MasterSettingsIp()
+                            {
+                                Host = connectionSettings.Host,
+                                IsLoggerEnabled = false,
+                                Period = project.Period,
+                                Port = connectionSettings.Port,
+                                SlaveSettings = slaveSettings,
+                                StatFlushPeriod = project.StatFlushPeriod,
+                                Timeout = project.Timeout
+                            });
+
+                            operationResult.Logs.Add($"Successfully got data from {connectionSettings.Host}:{connectionSettings.Port}");
+
+                            operationResult.Results.Add(results.ToDictionary(x => x.Key.ToString(), x => x.Value));
+                        }
+                        catch (Exception ex)
+                        {
+                            operationResult.Logs.Add(ex.Message);
+                        }
+                    }
+
+                    Monitor.Exit(timerLock);
+                };
+                
+                timer.Start();
             }
-            else if (project.ConnectionSettings is ComConnectionSettings)
+
+            while (timer.Enabled)
             {
-                var connectionSettings = project.ConnectionSettings as ComConnectionSettings;
-
-                return modbusService.GetDataFromSlaves(new ModbusApp.Core.Models.MasterSettingsCom()
-                {
-                    IsLoggerEnabled = project.IsLoggerEnabled,
-                    Period = project.Period,
-                    SlaveSettings = slaveSettings,
-                    StatFlushPeriod = project.StatFlushPeriod,
-                    Timeout = project.Timeout,
-                    BaudRate = connectionSettings.BaudRate,
-                    DataBits = connectionSettings.DataBits,
-                    Parity = connectionSettings.Parity,
-                    PortName = connectionSettings.PortName,
-                    StopBits = connectionSettings.StopBits
-                });
+                Thread.Sleep(project.Period * 1000);
             }
 
-            throw new Exception();
+            return operationResult;
         }
 
         private void CreateSettingsFile(string filePath, Project project)
@@ -591,13 +635,20 @@ namespace ModbusAppGenerator.Core.Services
                 $"Port={port}\r\n" +
                 $"{connectionSettings}\r\n" +
                 $"Period={project.Period}\r\n" +
-                $"[Actions]//Group#=ActionType;DeviceID;StartingRegister;Number of Registers;Fromula (for write actions);Types\r\n";
+                $"[Actions]//Group#=ActionType;DeviceID;StartingRegister;Number of Registers;Formula (for write actions);Types\r\n";
 
             for (int i = 0; i < project.Actions.Count; i++)
             {
                 var types = string.Join(";", project.Actions[i].Types.Select(x => x.ToString()));
 
-                fileText += $"{i + 1}={project.Actions[i].ActionType.ToString()};{project.Actions[i].SlaveAddress};{project.Actions[i].StartAddress};{project.Actions[i].NumberOfRegisters};{project.Actions[i].Formula};{types}\r\n";
+                fileText += $"{i + 1}={project.Actions[i].ActionType.ToString()};{project.Actions[i].SlaveAddress};{project.Actions[i].StartAddress};{project.Actions[i].NumberOfRegisters};";
+
+                if (project.Actions[i].ActionType.ToString() == "Write")
+                {
+                    fileText += project.Actions[i].Formula + ";";
+                }
+
+                fileText += $"{types}\r\n";
             }
 
             using (FileStream fs = File.Create(filePath))

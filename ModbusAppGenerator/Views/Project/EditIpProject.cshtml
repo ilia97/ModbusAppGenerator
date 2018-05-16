@@ -4,7 +4,11 @@
     ViewData["Title"] = "Edit Ip Project";
 }
 
-<h2>Edit Ip Project Settings</h2>
+<h2 class="text-center">Edit Ip Project Settings</h2>
+
+<h5 class="text-center">Here you can edit main settings of your project. After finishing your work you can go to @Html.ActionLink("details", "Details", new { id = Model.Id }, new { @class = "mdl-navigation__link mdl-link" }) page.</h5>
+
+<h5 class="text-center">You can also update actions of the project @Html.ActionLink("here", "EditActions", new { id = Model.Id }, new { @class = "mdl-navigation__link mdl-link" }).</h5>
 
 <div>
     @using (Html.BeginForm("EditIpProject", "Project"))
@@ -14,38 +18,52 @@
         @Html.HiddenFor(m => m.Id)
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.TextBoxFor(m => m.Name, new { @class = "mdl-textfield__input", autocomplete = "off" })
+                @Html.TextBoxFor(m => m.Name, new { @class = "mdl-textfield__input required", autocomplete = "off" })
                 @Html.LabelFor(m => m.Name, new { @class = "mdl-textfield__label" })
-            </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "mdl-textfield__error" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.TextBoxFor(m => m.Host, new { @class = "mdl-textfield__input", autocomplete = "off" })
+                @Html.TextBoxFor(m => m.Host, new { @class = "mdl-textfield__input required", autocomplete = "off", pattern = @"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b" })
                 @Html.LabelFor(m => m.Host, new { @class = "mdl-textfield__label" })
-            </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.Host, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.Host, "", new { @class = "mdl-textfield__error" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.TextBoxFor(m => m.Port, new { @class = "mdl-textfield__input", autocomplete = "off" })
+                @Html.TextBoxFor(m => m.Port, new { @class = "mdl-textfield__input required", autocomplete = "off", pattern = @"-?[0-9]*(\.[0-9]+)?" })
                 @Html.LabelFor(m => m.Port, new { @class = "mdl-textfield__label" })
-            </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.Port, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.Port, "", new { @class = "mdl-textfield__error" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.TextAreaFor(m => m.Description, new { @class = "mdl-textfield__input", type = "text", rows = "3" })
+                @Html.TextAreaFor(m => m.Description, new { @class = "mdl-textfield__input required", type = "text", rows = "3" })
                 @Html.LabelFor(m => m.Description, new { @class = "mdl-textfield__label" })
+                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "mdl-textfield__error" })
             </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                @Html.TextBoxFor(m => m.Period, new { @class = "mdl-textfield__input required", autocomplete = "off", pattern = @"-?[0-9]*(\.[0-9]+)?" })
+                @Html.LabelFor(m => m.Period, new { @class = "mdl-textfield__label" })
+                @Html.ValidationMessageFor(m => m.Period, "", new { @class = "mdl-textfield__error" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                @Html.TextBoxFor(m => m.Timeout, new { @class = "mdl-textfield__input required", autocomplete = "off", pattern = @"-?[0-9]*(\.[0-9]+)?" })
+                @Html.LabelFor(m => m.Timeout, new { @class = "mdl-textfield__label" })
+                @Html.ValidationMessageFor(m => m.Timeout, "", new { @class = "mdl-textfield__error" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="checkbox" style="padding-left: 0px">
+                <label for="IsLoggerEnabled" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" style="padding-top: 4px">
+                    <input for="IsLoggerEnabled" type="checkbox" name="IsLoggerEnabled" id="IsLoggerEnabled" class="mdl-checkbox__input" value="true" @(Model.IsLoggerEnabled ? " checked" : "")>
+                    <span class="mdl-checkbox__label">@Html.DisplayNameFor(m => m.IsLoggerEnabled)</span>
+                </label>
             </div>
         </div>
         <div class="form-group">
@@ -53,9 +71,3 @@
         </div>
     }
 </div>
-
-@Html.Action("ActionForm", new { id = Model.Id })
-
-@section Scripts {
-    <script src="~/Scripts/viewControllers/project/update-actions.js"></script>
-}

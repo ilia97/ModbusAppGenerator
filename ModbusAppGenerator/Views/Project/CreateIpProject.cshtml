@@ -17,20 +17,16 @@
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.TextBoxFor(m => m.Host, new { @class = "mdl-textfield__input", autocomplete = "off" })
+                @Html.TextBoxFor(m => m.Host, new { @class = "mdl-textfield__input required", autocomplete = "off", pattern = @"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b" })
                 @Html.LabelFor(m => m.Host, new { @class = "mdl-textfield__label" })
-            </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.Host, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.Host, "", new { @class = "mdl-textfield__error" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.TextBoxFor(m => m.Port, new { @class = "mdl-textfield__input", autocomplete = "off" })
+                @Html.TextBoxFor(m => m.Port, new { @class = "mdl-textfield__input required", autocomplete = "off", pattern = @"-?[0-9]*(\.[0-9]+)?" })
                 @Html.LabelFor(m => m.Port, new { @class = "mdl-textfield__label" })
-            </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.Port, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.Port, "", new { @class = "mdl-textfield__error" })
             </div>
         </div>
         <div class="form-group">

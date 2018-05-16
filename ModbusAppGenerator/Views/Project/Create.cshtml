@@ -14,35 +14,51 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.TextBoxFor(m => m.Name, new { @class = "mdl-textfield__input", autocomplete = "off" })
+                @Html.TextBoxFor(m => m.Name, new { @class = "mdl-textfield__input required", autocomplete = "off" })
                 @Html.LabelFor(m => m.Name, new { @class = "mdl-textfield__label" })
-            </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "mdl-textfield__error" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
-                @Html.TextBoxFor(m => m.ConnectionType, new { @class = "mdl-textfield__input", autocomplete = "off", @readonly = "readonly", type = "text", value = "" })
+                @Html.TextBoxFor(m => m.ConnectionType, new { @class = "mdl-textfield__input required", autocomplete = "off", @readonly = "readonly", type = "text", value = "" })
                 <input type="hidden" value="" name="ConnectionType">
                 <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
                 @Html.LabelFor(m => m.ConnectionType, new { @class = "mdl-textfield__label" })
                 <ul for="sample4" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-                    <li class="mdl-menu__item" data-val="Ip">Ip</li>
-                    <li class="mdl-menu__item" data-val="Com">Com</li>
+                    <li class="mdl-menu__item" data-val="Ip" @(Model != null && Model.ConnectionType == ModbusAppGenerator.DataAccess.Enums.ConnectionTypes.Ip ? " data-selected='true'" : "")>Ip</li>
+                    <li class="mdl-menu__item" data-val="Com" @(Model != null && Model.ConnectionType == ModbusAppGenerator.DataAccess.Enums.ConnectionTypes.Com ? " data-selected='true'" : "")>Com</li>
                 </ul>
-            </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.ConnectionType, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.ConnectionType, "", new { @class = "mdl-textfield__error" })
             </div>
         </div>
         <div class="form-group">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                @Html.TextAreaFor(m => m.Description, new { @class = "mdl-textfield__input", type = "text", rows = "3" })
+                @Html.TextAreaFor(m => m.Description, new { @class = "mdl-textfield__input required", type = "text", rows = "3" })
                 @Html.LabelFor(m => m.Description, new { @class = "mdl-textfield__label" })
+                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "mdl-textfield__error" })
             </div>
-            <div>
-                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                @Html.TextBoxFor(m => m.Period, new { @class = "mdl-textfield__input required", autocomplete = "off", pattern = @"-?[0-9]*(\.[0-9]+)?" })
+                @Html.LabelFor(m => m.Period, new { @class = "mdl-textfield__label" })
+                @Html.ValidationMessageFor(m => m.Period, "", new { @class = "mdl-textfield__error" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                @Html.TextBoxFor(m => m.Timeout, new { @class = "mdl-textfield__input required", autocomplete = "off", pattern = @"-?[0-9]*(\.[0-9]+)?" })
+                @Html.LabelFor(m => m.Timeout, new { @class = "mdl-textfield__label" })
+                @Html.ValidationMessageFor(m => m.Timeout, "", new { @class = "mdl-textfield__error" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="checkbox" style="padding-left: 0px">
+                <label for="IsLoggerEnabled" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" style="padding-top: 4px">
+                    <input for="IsLoggerEnabled" type="checkbox" name="IsLoggerEnabled" id="IsLoggerEnabled" class="mdl-checkbox__input" value="true" @(Model != null && Model.IsLoggerEnabled ? " checked" : "")>
+                    <span class="mdl-checkbox__label">@Html.DisplayNameFor(m => m.IsLoggerEnabled)</span>
+                </label>
             </div>
         </div>
         <div class="form-group">

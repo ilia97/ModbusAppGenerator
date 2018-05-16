@@ -230,12 +230,14 @@
     <Compile Include="ViewModels\ManageViewModels\ManageLoginsViewModel.cs" />
     <Compile Include="ViewModels\ManageViewModels\SetPasswordViewModel.cs" />
     <Compile Include="ViewModels\ManageViewModels\VerifyPhoneNumberViewModel.cs" />
+    <Compile Include="ViewModels\ProjectViewModels\EditActionsViewModel.cs" />
     <Compile Include="ViewModels\ProjectViewModels\ActionViewModel.cs" />
     <Compile Include="ViewModels\ProjectViewModels\AddProjectActionsViewModel.cs" />
     <Compile Include="ViewModels\ProjectViewModels\CreateComProjectViewModel.cs" />
     <Compile Include="ViewModels\ProjectViewModels\CreateIpProjectViewModel.cs" />
     <Compile Include="ViewModels\ProjectViewModels\CreateProjectViewModel.cs" />
     <Compile Include="ViewModels\ProjectViewModels\DetailsViewModel.cs" />
+    <Compile Include="ViewModels\ProjectViewModels\EditProjectViewModel.cs" />
     <Compile Include="ViewModels\ProjectViewModels\EditComProjectViewModel.cs" />
     <Compile Include="ViewModels\ProjectViewModels\EditIpProjectViewModel.cs" />
     <Compile Include="ViewModels\ProjectViewModels\ProjectListItemViewModel.cs" />
@@ -251,9 +253,10 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\css\Site.css" />
+    <Content Include="Scripts\common.js" />
     <Content Include="Scripts\lib\getmdl-select.min.js" />
+    <Content Include="Scripts\overrides\required-attribute.js" />
     <Content Include="Scripts\services\projectService.js" />
-    <Content Include="Scripts\viewControllers\project\create-com-project.js" />
     <Content Include="Scripts\viewControllers\project\create.js" />
     <Content Include="Scripts\viewControllers\project\details.js" />
     <Content Include="Scripts\viewControllers\project\list.js" />
@@ -324,6 +327,7 @@
     <Content Include="Views\Project\EditIpProject.cshtml" />
     <Content Include="Views\Project\Index.cshtml" />
     <Content Include="Views\Project\UpdateActions.cshtml" />
+    <Content Include="Views\Project\EditActions.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

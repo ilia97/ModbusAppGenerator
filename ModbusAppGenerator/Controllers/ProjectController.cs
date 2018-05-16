@@ -28,7 +28,30 @@ namespace ModbusAppGenerator.Controllers
 
             var usersProjects = _projectService.GetUserProjects(currentUserId);
 
-            var model = Mapper.Map<IList<Project>, IList<ProjectListItemViewModel>>(usersProjects);
+            var model = new List<ProjectListItemViewModel>();
+
+            foreach (var project in usersProjects)
+            {
+                var viewProject = Mapper.Map<Project, ProjectListItemViewModel>(project);
+
+                if (project.ConnectionSettings.GetType() == typeof(IpConnectionSettings))
+                {
+                    viewProject.ConnectionType = ConnectionTypes.Ip;
+                    viewProject.Host = ((IpConnectionSettings)project.ConnectionSettings).Host;
+                    viewProject.Port = ((IpConnectionSettings)project.ConnectionSettings).Port;
+                }
+                else if (project.ConnectionSettings.GetType() == typeof(ComConnectionSettings))
+                {
+                    viewProject.ConnectionType = ConnectionTypes.Com;
+                    viewProject.BaudRate = ((ComConnectionSettings)project.ConnectionSettings).BaudRate;
+                    viewProject.DataBits = ((ComConnectionSettings)project.ConnectionSettings).DataBits;
+                    viewProject.Parity = ((ComConnectionSettings)project.ConnectionSettings).Parity;
+                    viewProject.PortName = ((ComConnectionSettings)project.ConnectionSettings).PortName;
+                    viewProject.StopBits = ((ComConnectionSettings)project.ConnectionSettings).StopBits;
+                }
+
+                model.Add(viewProject);
+            }
 
             return View(model);
         }
@@ -41,13 +64,13 @@ namespace ModbusAppGenerator.Controllers
 
             if (project.ConnectionSettings.GetType() == typeof(IpConnectionSettings))
             {
-                model.ConnectionType = DataAccess.Enums.ConnectionTypes.Ip;
+                model.ConnectionType = ConnectionTypes.Ip;
                 model.Host = ((IpConnectionSettings)project.ConnectionSettings).Host;
                 model.Port = ((IpConnectionSettings)project.ConnectionSettings).Port;
             }
             else if (project.ConnectionSettings.GetType() == typeof(ComConnectionSettings))
             {
-                model.ConnectionType = DataAccess.Enums.ConnectionTypes.Com;
+                model.ConnectionType = ConnectionTypes.Com;
                 model.BaudRate = ((ComConnectionSettings)project.ConnectionSettings).BaudRate;
                 model.DataBits = ((ComConnectionSettings)project.ConnectionSettings).DataBits;
                 model.Parity = ((ComConnectionSettings)project.ConnectionSettings).Parity;
@@ -74,14 +97,20 @@ namespace ModbusAppGenerator.Controllers
 
             var project = Mapper.Map<CreateProjectViewModel, Project>(model);
 
-            var newProjectId = _projectService.Add(project, User.Identity.GetUserId());
-
             switch (model.ConnectionType)
             {
-                case DataAccess.Enums.ConnectionTypes.Ip:
-                    return RedirectToAction("CreateIpProject", new { projectId = newProjectId });
-                case DataAccess.Enums.ConnectionTypes.Com:
-                    return RedirectToAction("CreateComProject", new { projectId = newProjectId });
+                case ConnectionTypes.Ip:
+                    project.ConnectionSettings = new IpConnectionSettings();
+
+                    var newIpProjectId = _projectService.Add(project, User.Identity.GetUserId());
+
+                    return RedirectToAction("CreateIpProject", new { projectId = newIpProjectId });
+                case ConnectionTypes.Com:
+                    project.ConnectionSettings = new IpConnectionSettings();
+
+                    var newComProjectId = _projectService.Add(project, User.Identity.GetUserId());
+
+                    return RedirectToAction("CreateComProject", new { projectId = newComProjectId });
             }
 
             return View(model);
@@ -210,7 +239,8 @@ namespace ModbusAppGenerator.Controllers
             {
                 return RedirectToAction("EditIpProject", new { id });
             }
-            else if (project.ConnectionSettings.GetType() == typeof(ComConnectionSettings))
+
+            if (project.ConnectionSettings.GetType() == typeof(ComConnectionSettings))
             {
                 return RedirectToAction("EditComProject", new { id });
             }
@@ -245,7 +275,7 @@ namespace ModbusAppGenerator.Controllers
 
             _projectService.Edit(project, User.Identity.GetUserId());
 
-            return RedirectToAction("UpdateActions", new { id = project.Id });
+            return RedirectToAction("EditIpProject", new { id = project.Id });
         }
 
         public ActionResult EditComProject(int id)
@@ -278,7 +308,16 @@ namespace ModbusAppGenerator.Controllers
 
             _projectService.Edit(project, User.Identity.GetUserId());
 
-            return RedirectToAction("UpdateActions", new { id = project.Id });
+            return RedirectToAction("EditComProject", new { id = project.Id });
+        }
+        
+        public ActionResult EditActions(int id)
+        {
+            var project = _projectService.Get(id, User.Identity.GetUserId());
+
+            var model = Mapper.Map<Project, EditActionsViewModel>(project);
+
+            return View(model);
         }
 
         public ActionResult Delete(int id)
@@ -315,14 +354,12 @@ namespace ModbusAppGenerator.Controllers
             return result;
         }
         
-        public ActionResult Test(int id)
+        [HttpPost]
+        public JsonResult Test(int id, int cyclesCount)
         {
-            var results = _projectService.TestProject(id, User.Identity.GetUserId());
+            var results = _projectService.TestProject(id, cyclesCount, User.Identity.GetUserId());
 
-            var jsonResult = new JsonResult();
-            jsonResult.Data = results;
-
-            return jsonResult;
+            return Json(results);
         }
     }
 }
