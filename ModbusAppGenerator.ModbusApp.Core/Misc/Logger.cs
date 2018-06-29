@@ -42,6 +42,11 @@ namespace ModbusAppGenerator.ModbusApp.Core.Misc
             var filePath = Path.Combine(dataFolderName, fileName);
             
             File.AppendAllText(filePath, $"{DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc):HH:mm:ss} {text}\r\n");
+
+            if (WriteLogsToConsole)
+            {
+                Console.WriteLine($"{DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc):HH:mm:ss} {text}\r\n");
+            }
         }
     }
 }

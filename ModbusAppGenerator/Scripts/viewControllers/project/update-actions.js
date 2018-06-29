@@ -1,9 +1,6 @@
 ﻿$(function () {
     var projectService = new ProjectService();
 
-    var submitButton = $('#save-action-button');
-    var addActionButton = $('#add-action-button');
-
     var projectIdInput = $('#Id');
 
     var writeRadioButton = $('#ActionType_Write');
@@ -28,11 +25,11 @@
         }
     }
 
-    addActionButton.click(function () {
-        dialog[0].showModal();
+    $('.action-form').on('click', '#add-action-button', function () {
+        $('dialog')[0].showModal();
     });
 
-    $('.update-actions').on('click', '.edit', function () {
+    $('.action-form').on('click', '.edit', function () {
         var actionBlock = $(this).parents('.action');
 
         $('#ActionId').val(actionBlock.data('id'));
@@ -53,21 +50,25 @@
         dialog[0].showModal();
     });
 
-    submitButton.click(function () {
+    $('.action-form').on('click', '#save-action-button', function () {
         if (!$(this).parents('form')[0].checkValidity()) {
             return;
         }
 
         var action = collectActionModel();
 
-        projectService.updateAction(action);
+        projectService.updateAction(action, function (actionFormHtml) {
+            $('.action-form').html(actionFormHtml);
+        });
     });
 
-    deleteButtons.click(function () {
+    $('.action-form').on('click', '.delete', function () {
         var actionId = $(this).parents('.action').data('id');
         var projectId = projectIdInput.val();
 
-        projectService.deleteAction(actionId, projectId);
+        projectService.deleteAction(actionId, projectId, function (actionFormHtml) {
+            $('.action-form').html(actionFormHtml);
+        });
     });
 
     function collectActionModel() {
@@ -90,8 +91,8 @@
 
         return model;
     }
-    
-    closeDialogButton.click(function () {
+
+    $('.action-form').on('click', 'dialog .close', function () {
         dialog[0].close();
     });
 });

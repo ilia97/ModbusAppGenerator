@@ -8,7 +8,9 @@
 
 <h5 class="text-center">After finishing your work you can go to @Html.ActionLink("details", "Details", new { id = Model.Id }, new { @class = "mdl-navigation__link mdl-link" }) page or back to @Html.ActionLink("edit", "Edit", new { id = Model.Id }, new { @class = "mdl-navigation__link mdl-link" }) page.</h5>
 
-@Html.Action("ActionForm", new { id = Model.Id })
+<div class="action-form">
+    @Html.Action("ActionForm", new { id = Model.Id })
+</div>
 
 @section Scripts {
     <script src="~/Scripts/viewControllers/project/update-actions.js"></script>

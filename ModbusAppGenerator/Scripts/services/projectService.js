@@ -13,15 +13,33 @@
         });
     }
 
-    this.updateAction = function (action) {
-        $.post('/Project/UpdateAction', action, function () {
-            // if success
-            location.reload();
+    this.updateAction = function (action, callback) {
+        $.ajax({
+            type: "POST",
+            url: "/Project/UpdateAction",
+            data: action,
+            success: function (data, textStatus, jqXHR) {
+                if (callback) {
+                    callback(data);
+                }
+            }
         });
     }
 
-    this.deleteAction = function (actionId, projectId) {
-        window.location = window.location.origin + '/Project/DeleteAction/' + actionId + '?projectId=' + projectId;
+    this.deleteAction = function (actionId, projectId, callback) {
+        $.ajax({
+            type: "POST",
+            url: "/Project/DeleteAction/",
+            data: {
+                projectId: projectId,
+                id: actionId
+            },
+            success: function (data, textStatus, jqXHR) {
+                if (callback) {
+                    callback(data);
+                }
+            }
+        });
     }
 
     this.deleteProject = function (id) {

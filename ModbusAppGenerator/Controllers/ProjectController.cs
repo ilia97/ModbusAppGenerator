@@ -221,14 +221,15 @@ namespace ModbusAppGenerator.Controllers
                 _projectService.EditAction(model.ProjectId, action, User.Identity.GetUserId());
             }
 
-            return RedirectToAction("UpdateActions", new { id = model.ProjectId });
+            return RedirectToAction("ActionForm", new { id = model.ProjectId });
         }
         
+        [HttpPost]
         public ActionResult DeleteAction(int id, int projectId)
         {
             _projectService.DeleteAction(projectId, id, User.Identity.GetUserId());
 
-            return RedirectToAction("UpdateActions", new { id = projectId });
+            return RedirectToAction("ActionForm", new { id = projectId });
         }
 
         public ActionResult Edit(int id)

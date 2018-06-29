@@ -21,11 +21,11 @@ namespace ModbusAppGenerator.ViewModels.ProjectViewModels
         public bool IsLoggerEnabled { set; get; }
 
         [Required]
-        [Display(Name = "Period")]
+        [Display(Name = "Period (seconds)")]
         public int? Period { set; get; }
 
         [Required]
-        [Display(Name = "Timeout")]
+        [Display(Name = "Timeout (milliseconds)")]
         public int? Timeout { set; get; }
     }
 }

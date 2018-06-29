@@ -14,12 +14,28 @@
                          data-start-address="@action.StartAddress" data-number-of-registers="@action.NumberOfRegisters"
                          data-types="@action.Types" data-action-type="@action.ActionType" data-formula="@action.Formula">
                         <input type="hidden" value="@action.Id" class="action-id" />
-                        Slave Device Number: @action.SlaveAddress <br />
-                        Start Address: @action.StartAddress <br />
-                        Number Of Registers: @action.NumberOfRegisters <br />
-                        Types: @action.Types <br />
-                        <button class="edit mdl-button">Edit</button>
-                        <button class="delete mdl-button">Delete</button>
+                        <h4>
+                            @if (action.ActionType == ModbusAppGenerator.DataAccess.Enums.ActionTypes.Read)
+                            {
+                                <span>Read @action.NumberOfRegisters @(action.NumberOfRegisters == 1 ? "register" : "registers") from slave number @action.SlaveAddress starting from register number @action.StartAddress. Convert data to @(string.Join(", ", action.Types.Split(';'))).</span>
+
+
+                            }
+                            else if (action.ActionType == ModbusAppGenerator.DataAccess.Enums.ActionTypes.Read)
+                            {
+                                <span>
+                                    Write @action.Formula to slave number @action.SlaveAddress to register number @action.StartAddress.
+                                </span>
+                            }
+                            <span>
+                                <a class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect edit">
+                                    <i class="material-icons">mode_edit</i>
+                                </a>
+                                <a class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect project-delete delete">
+                                    <i class="material-icons">delete</i>
+                                </a>
+                            </span>
+                        </h4>
                     </div>
                 }
             </div>

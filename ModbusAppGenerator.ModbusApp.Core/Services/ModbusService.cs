@@ -37,37 +37,44 @@ namespace ModbusAppGenerator.ModbusApp.Core.Services
                 var masterSettingsIp = masterSettings as MasterSettingsIp;
                 if (masterSettingsIp != null)
                 {
-                    var client = new TcpClient(masterSettingsIp.Host,
+                    using (var client = new TcpClient(
+                        masterSettingsIp.Host,
                         masterSettingsIp.Port)
-                    { ReceiveTimeout = masterSettings.Timeout };
+                    {
+                        ReceiveTimeout = masterSettings.Timeout
+                    })
+                    {
 
-                    master = ModbusIpMaster.CreateIp(client);
+                        master = ModbusIpMaster.CreateIp(client);
 
-                    results = SendRequests(master, masterSettings);
+                        results = SendRequests(master, masterSettings);
 
-                    client.Close();
+                        client.Close();
+                    }
                 }
                 else
                 {
                     var masterSettingsCom = masterSettings as MasterSettingsCom;
                     if (masterSettingsCom != null)
                     {
-                        var port = new SerialPort(masterSettingsCom.PortName)
+                        using (var port = new SerialPort(masterSettingsCom.PortName)
                         {
                             BaudRate = masterSettingsCom.BaudRate,
                             DataBits = masterSettingsCom.DataBits,
                             Parity = masterSettingsCom.Parity,
                             StopBits = masterSettingsCom.StopBits,
                             ReadTimeout = masterSettingsCom.Timeout
-                        };
+                        })
+                        {
 
-                        port.Open();
+                            port.Open();
 
-                        master = ModbusSerialMaster.CreateRtu(port);
+                            master = ModbusSerialMaster.CreateRtu(port);
 
-                        results = SendRequests(master, masterSettings);
+                            results = SendRequests(master, masterSettings);
 
-                        port.Close();
+                            port.Close();
+                        }
                     }
                 }
             }
